@@ -1,4 +1,6 @@
-import DashBoardButton from '../../../components/DashBoardButton';
+import DashBoardButton from '../../../components/dashboard/DashBoardButton';
+import PlusButton from '../../../components/dashboard/PlusButton';
+import ColorChipSection from '../../../components/ColorChipSection';
 
 export default function MydashBoard() {
   return (
@@ -10,6 +12,10 @@ export default function MydashBoard() {
       <DashBoardButton className="bg-white text-[#787486] border border-[#D9D9D9]">
         취소
       </DashBoardButton>
+      <div className="ml-2">
+        <PlusButton />
+      </div>
+      <ColorChipSection />
     </>
   );
 }
