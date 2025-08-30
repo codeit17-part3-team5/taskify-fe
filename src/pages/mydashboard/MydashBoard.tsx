@@ -4,6 +4,11 @@ import PlusButton from '../../../components/dashboard/PlusButton';
 import Modal from '../../../components/Modal';
 import Messageimg from './mesaageimg.png';
 import CreateDashboard from '../../../components/dashboard/CreateDashboard';
+import {
+  DASHBOARD_CARDS,
+  SIDEBAR_ITEMS,
+  INVITED_DASHBOARDS,
+} from '@/MockDashboardData';
 
 export default function MydashBoard() {
   const [open, setOpen] = useState(false);
@@ -16,12 +21,29 @@ export default function MydashBoard() {
           사이드 바
         </aside>
         <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
-          <div
-            className="w-[332px] h-[70px] flex gap-3 justify-center items-center bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
-            onClick={() => setOpen(true)}
-          >
-            새로운 대시보드
-            <PlusButton />
+          <div className="flex flex-col w-[1022px] gap-3">
+            <div className="grid grid-cols-3 gap-[13px] w-full">
+              {DASHBOARD_CARDS.slice(0, 6).map((card) => (
+                <div
+                  key={card.id}
+                  className="w-[332px] h-[70px] flex gap-3 items-center bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
+                >
+                  <span
+                    className="inline-block w-2 h-2 rounded-full"
+                    style={{ backgroundColor: card.dot }}
+                  />
+                  {card.title}
+                  {card.isOwnerCrown ? <span className="ml-1">👑</span> : null}
+                </div>
+              ))}
+              <div
+                className="w-[332px] h-[70px] flex gap-3 justify-center items-center bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
+                onClick={() => setOpen(true)}
+              >
+                새로운 대시보드
+                <PlusButton />
+              </div>
+            </div>
           </div>
 
           <div className="w-[960px] px-10 pt-6 pb-30 bg-white flex gap-16 rounded-[16px] mt-15 font-bold text-6 flex-col">
