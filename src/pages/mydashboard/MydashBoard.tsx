@@ -3,6 +3,7 @@ import Image from 'next/image';
 import PlusButton from '../../../components/dashboard/PlusButton';
 import Modal from '../../../components/Modal';
 import Messageimg from './mesaageimg.png';
+import Arrowimg from './arrowimg.png';
 import CreateDashboard from '../../../components/dashboard/CreateDashboard';
 import {
   DASHBOARD_CARDS,
@@ -23,19 +24,6 @@ export default function MydashBoard() {
         <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
           <div className="flex flex-col w-[1022px] gap-3">
             <div className="grid grid-cols-3 gap-[13px] w-full">
-              {DASHBOARD_CARDS.slice(0, 6).map((card) => (
-                <div
-                  key={card.id}
-                  className="w-[332px] h-[70px] flex gap-3 items-center bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
-                >
-                  <span
-                    className="inline-block w-2 h-2 rounded-full"
-                    style={{ backgroundColor: card.dot }}
-                  />
-                  {card.title}
-                  {card.isOwnerCrown ? <span className="ml-1">👑</span> : null}
-                </div>
-              ))}
               <div
                 className="w-[332px] h-[70px] flex gap-3 justify-center items-center bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
                 onClick={() => setOpen(true)}
@@ -43,9 +31,47 @@ export default function MydashBoard() {
                 새로운 대시보드
                 <PlusButton />
               </div>
+              {DASHBOARD_CARDS.slice(0, 6).map((card) => (
+                <div
+                  key={card.id}
+                  className="w-[332px] h-[70px] flex gap-3 items-center justify-between px-5 py-[22px] bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
+                >
+                  <div className="flex items-center gap-4">
+                    <span
+                      className="inline-block w-2 h-2 rounded-full"
+                      style={{ backgroundColor: card.dot }}
+                    />
+                    <div>
+                      {card.title}
+                      {card.isOwnerCrown ? (
+                        <span className="ml-1">👑</span>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div>
+                    <Image
+                      src={Arrowimg}
+                      alt="화살표 이미지"
+                      width={7}
+                      height={14}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
+          <div className="w-[1020px] px-10 pt-6 pb-30 bg-white flex gap-16 rounded-[16px] mt-15 font-bold text-6 flex-col">
+            초대받은 대시보드
+            <div className="flex flex-col gap-6 justify-center items-center text-[#9FA6B2] text-4.5 mx-auto">
+              <Image
+                src={Messageimg}
+                alt="메시지 이미지"
+                width={100}
+                height={100}
+              />
+              아직 초대받은 대시보드가 없어요
+            </div>
+          </div>
           <div className="w-[960px] px-10 pt-6 pb-30 bg-white flex gap-16 rounded-[16px] mt-15 font-bold text-6 flex-col">
             초대받은 대시보드
             <div className="flex flex-col gap-6 justify-center items-center text-[#9FA6B2] text-4.5 mx-auto">
