@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import PlusButton from '../../../components/dashboard/PlusButton';
 import Modal from '../../../components/Modal';
 import Messageimg from './mesaageimg.png';
 import Arrowimg from './arrowimg.png';
+import Searchimg from './Searchimg.png';
 import CreateDashboard from '../../../components/dashboard/CreateDashboard';
 import {
   DASHBOARD_CARDS,
@@ -13,6 +14,16 @@ import {
 
 export default function MydashBoard() {
   const [open, setOpen] = useState(false);
+
+  const [query, setQuery] = useState('');
+
+  const filteredInvites = useMemo(() => {
+    const q = query.trim();
+    if (!q) return INVITED_DASHBOARDS;
+    return INVITED_DASHBOARDS.filter(
+      (r) => r.name.includes(q) || r.inviter.includes(q)
+    );
+  }, [query]);
 
   return (
     <>
@@ -60,16 +71,58 @@ export default function MydashBoard() {
               ))}
             </div>
           </div>
-          <div className="w-[1020px] px-10 pt-6 pb-30 bg-white flex gap-16 rounded-[16px] mt-15 font-bold text-6 flex-col">
-            초대받은 대시보드
-            <div className="flex flex-col gap-6 justify-center items-center text-[#9FA6B2] text-4.5 mx-auto">
-              <Image
-                src={Messageimg}
-                alt="메시지 이미지"
-                width={100}
-                height={100}
-              />
-              아직 초대받은 대시보드가 없어요
+          <div className="w-[1020px] py-8 bg-white flex gap-6 rounded-[8px] mt-15 font-bold text-6 flex-col">
+            <div className="w-[966px] mx-auto flex flex-col gap-8">
+              초대받은 대시보드
+              <div className="flex gap-2 w-full h-10 px-4 py-2.5 border border-[#D9D9D9] rounded-[6px]">
+                <Image
+                  src={Searchimg}
+                  alt="검색 돋보기 이미지"
+                  width={16}
+                  height={16}
+                />
+                <input
+                  type="text"
+                  placeholder="검색"
+                  className="text-4 text-[#9FA6B2] font-semibold w-full"
+                />
+              </div>
+            </div>
+            <div className="w-full font-normal text-4">
+              <div className="pl-[76px] pr-8">
+                <div className="grid grid-cols-3 text-[#9FA6B2] w-[798px]">
+                  <div className="col-span-1">이름</div>
+                  <div className="col-span-1">초대자</div>
+                  <div className="col-span-1 flex justify-center">
+                    수락 여부
+                  </div>
+                </div>
+                <div className="divide-y divide-[#F1F5F9] w-[798px]">
+                  {filteredInvites.map((row) => (
+                    <div
+                      key={row.id}
+                      className="grid grid-cols-3 items-center py-5"
+                    >
+                      <div>{row.name}</div>
+                      <div>{row.inviter}</div>
+                      <div className="flex gap-2.5 justify-center">
+                        <button className="w-[84px] px-3 h-8 rounded bg-[#5534DA] text-white text-[12px]">
+                          수락
+                        </button>
+                        <button className="w-[84px] px-3 h-8 rounded border border-[#E5E7EB] text-[12px]">
+                          거절
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {filteredInvites.length === 0 && (
+                    <div className="py-10 text-center text-[#9FA6B2]">
+                      검색 결과가 없습니다
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
           <div className="w-[960px] px-10 pt-6 pb-30 bg-white flex gap-16 rounded-[16px] mt-15 font-bold text-6 flex-col">
