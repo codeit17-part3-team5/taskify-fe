@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import PlusButton from '../../../components/dashboard/PlusButton';
 import Modal from '../../../components/Modal';
 import Messageimg from './mesaageimg.png';
@@ -71,8 +72,8 @@ export default function MydashBoard() {
               ))}
             </div>
           </div>
-          <div className="w-[1020px] py-8 bg-white flex gap-6 rounded-[8px] mt-15 font-bold text-6 flex-col">
-            <div className="w-[966px] mx-auto flex flex-col gap-8">
+          <div className="w-[1020px] py-8 bg-white flex gap-6 rounded-[8px] mt-15 flex-col">
+            <div className="w-[966px] mx-auto flex flex-col gap-8 font-bold text-[24px]">
               초대받은 대시보드
               <div className="flex gap-2 w-full h-10 px-4 py-2.5 border border-[#D9D9D9] rounded-[6px]">
                 <Image
@@ -84,7 +85,7 @@ export default function MydashBoard() {
                 <input
                   type="text"
                   placeholder="검색"
-                  className="text-4 text-[#9FA6B2] font-semibold w-full"
+                  className="text-[16px] text-[#9FA6B2] font-semibold w-full"
                 />
               </div>
             </div>
@@ -106,10 +107,10 @@ export default function MydashBoard() {
                       <div>{row.name}</div>
                       <div>{row.inviter}</div>
                       <div className="flex gap-2.5 justify-center">
-                        <button className="w-[84px] px-3 h-8 rounded bg-[#5534DA] text-white text-[12px]">
+                        <button className="px-[29px] py-[7px] rounded-[4px] bg-[#5534DA] text-white text-[14px] font-medium">
                           수락
                         </button>
-                        <button className="w-[84px] px-3 h-8 rounded border border-[#E5E7EB] text-[12px]">
+                        <button className="px-[29px] py-[7px] rounded-[4px] border border-[#D9D9D9] text-[14px] text-[#5534DA] font-medium font-pretendard">
                           거절
                         </button>
                       </div>

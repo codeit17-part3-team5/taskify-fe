@@ -41,15 +41,11 @@ export default function Modal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 isolate">
-      {' '}
-      {/* 스타일 최소화 */}
-      {/* 오버레이 (스타일 강요 X) */}
       <div
         className={`absolute inset-0 ${overlayClassName ?? 'bg-black/40'}`}
         onClick={onClose}
         aria-hidden="true"
       />
-      {/* 중앙 배치만 담당. 크기/여백은 자식이 책임지도록 pointer-events 트릭 */}
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <div
           role="dialog"
