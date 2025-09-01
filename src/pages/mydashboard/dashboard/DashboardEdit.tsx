@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ColorChipSection from '../../../../components/ColorChipSection';
 import { MOCK_MEMBERS, MOCK_INVITES } from '@/MockDashboardData';
 import Arrowleftfrom from './Arrowleft.png';
+import Plusinviteing from './Plusinvite.png';
 
 export default function DashboardEdit() {
   return (
@@ -35,7 +36,7 @@ export default function DashboardEdit() {
                       <input
                         type="text"
                         placeholder="뉴프로젝트"
-                        className="h-[50px] px-4 py-[15px] rounded-[8px] border border-[#D9D9D9] text-[16px]"
+                        className="h-[50px] px-4 py-[15px] rounded-[8px] border border-[#D9D9D9] text-[16px] focus:outline-none"
                       />
                     </div>
                     <ColorChipSection />
@@ -49,10 +50,10 @@ export default function DashboardEdit() {
                 <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
                   구성원
                   <div className="flex gap-4 items-center text-[14px] font-normal">
-                    1 페이지 중 1
+                    1 페이지 중 1<button>화살표 버튼</button>
                   </div>
                 </div>
-                <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-8">
+                <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
                   이름
                 </div>
                 <ul className="divide-y divide-[#EEEEEE]">
@@ -83,10 +84,19 @@ export default function DashboardEdit() {
                 <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
                   초대 내역
                   <div className="flex gap-4 items-center text-[14px] font-normal">
-                    1 페이지 중 1
+                    1 페이지 중 1<button>화살표 버튼</button>
+                    <button className="w-[105px] h-8 bg-[#5534DA] text-white text-[14px] rounded-[4px] flex items-center justify-center gap-2">
+                      <Image
+                        src={Plusinviteing}
+                        alt="플러스 버튼"
+                        width={14}
+                        height={14}
+                      />
+                      초대하기
+                    </button>
                   </div>
                 </div>
-                <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-8">
+                <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
                   이메일
                 </div>
                 <ul className="divide-y divide-[#EEEEEE]">

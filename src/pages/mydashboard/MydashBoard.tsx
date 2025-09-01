@@ -44,7 +44,8 @@ export default function MydashBoard() {
                 <PlusButton />
               </div>
               {DASHBOARD_CARDS.slice(0, 6).map((card) => (
-                <div
+                <Link
+                  href="/mydashboard/dashboard/DashboardEdit"
                   key={card.id}
                   className="w-[332px] h-[70px] flex gap-3 items-center justify-between px-5 py-[22px] bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
                 >
@@ -53,7 +54,7 @@ export default function MydashBoard() {
                       className="inline-block w-2 h-2 rounded-full"
                       style={{ backgroundColor: card.dot }}
                     />
-                    <div>
+                    <div className="text-[16px]">
                       {card.title}
                       {card.isOwnerCrown ? (
                         <span className="ml-1">👑</span>
@@ -68,8 +69,11 @@ export default function MydashBoard() {
                       height={14}
                     />
                   </div>
-                </div>
+                </Link>
               ))}
+            </div>
+            <div className="flex justify-end gap-4 text-[14px]">
+              1 페이지 중 1<button>화살표 버튼</button>
             </div>
           </div>
           <div className="w-[1020px] py-8 bg-white flex gap-6 rounded-[8px] mt-15 flex-col">
@@ -83,36 +87,37 @@ export default function MydashBoard() {
                   height={16}
                 />
                 <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                   type="text"
                   placeholder="검색"
-                  className="text-[16px] text-[#9FA6B2] font-semibold w-full"
+                  className="text-[16px] text-[#9FA6B2] font-semibold w-full focus:outline-none"
                 />
               </div>
             </div>
             <div className="w-full font-normal text-4">
-              <div className="pl-[76px] pr-8">
-                <div className="grid grid-cols-3 text-[#9FA6B2] w-[798px]">
+              <div>
+                <div className="pl-[76px] pr-8 grid grid-cols-3 text-[#9FA6B2] w-[820px]">
                   <div className="col-span-1">이름</div>
                   <div className="col-span-1">초대자</div>
                   <div className="col-span-1 flex justify-center">
                     수락 여부
                   </div>
                 </div>
-                <div className="divide-y divide-[#F1F5F9] w-[798px]">
+                <div className="divide-y divide-[#F1F5F9] w-full">
                   {filteredInvites.map((row) => (
-                    <div
-                      key={row.id}
-                      className="grid grid-cols-3 items-center py-5"
-                    >
-                      <div>{row.name}</div>
-                      <div>{row.inviter}</div>
-                      <div className="flex gap-2.5 justify-center">
-                        <button className="px-[29px] py-[7px] rounded-[4px] bg-[#5534DA] text-white text-[14px] font-medium">
-                          수락
-                        </button>
-                        <button className="px-[29px] py-[7px] rounded-[4px] border border-[#D9D9D9] text-[14px] text-[#5534DA] font-medium font-pretendard">
-                          거절
-                        </button>
+                    <div key={row.id} className="w-full">
+                      <div className="pl-[76px] pr-8 grid grid-cols-3 items-center py-5 w-[820px]">
+                        <div>{row.name}</div>
+                        <div>{row.inviter}</div>
+                        <div className="flex gap-2.5 justify-center">
+                          <button className="px-[29px] py-[7px] rounded-[4px] bg-[#5534DA] text-white text-[14px] font-medium">
+                            수락
+                          </button>
+                          <button className="px-[29px] py-[7px] rounded-[4px] border border-[#D9D9D9] text-[14px] text-[#5534DA] font-medium font-pretendard">
+                            거절
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -12,7 +12,7 @@ export default function CreateDashboard() {
             <input
               type="text"
               placeholder="뉴프로젝트"
-              className="h-[50px] px-4 py-[15px] rounded-[8px] border border-[#D9D9D9]"
+              className="h-[50px] px-4 py-[15px] rounded-[8px] border border-[#D9D9D9] focus:outline-none"
             />
           </div>
           <ColorChipSection />
