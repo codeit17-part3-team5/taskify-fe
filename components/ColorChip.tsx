@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import ColorSelect from './ColorSelect.png';
+import ColorSelect from '@/assets/images/ColorSelect.png';
 
 type ColorChipProps = {
   bgColor: string;

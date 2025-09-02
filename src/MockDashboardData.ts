@@ -14,15 +14,15 @@ export type DashboardCard = {
   id: string;
   title: string;
   dot: DotColor;
-  isOwnerCrown?: boolean; // 👑 표시 여부
+  isOwnerCrown?: boolean;
   href?: string;
 };
 
 export type InviteRow = {
   id: string;
-  name: string; // 대시보드 이름
-  inviter: string; // 초대자
-  status: 'pending' | 'accepted' | 'declined'; // 수락여부
+  name: string;
+  inviter: string;
+  status: 'pending' | 'accepted' | 'declined';
 };
 
 export type SidebarItem = {

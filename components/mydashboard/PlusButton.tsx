@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Plusimg from './Plusimg.png';
+import Plusimg from '@/assets/images/Plusimg.png';
 
 type PlusButtonProps = {
   onClick?: () => void; // 외부에서 클릭 핸들러 받음

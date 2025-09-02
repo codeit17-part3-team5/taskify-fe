@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-// import { createPortal } from 'react-dom';
+import { createPortal } from 'react-dom';
 
 type ModalProps = {
   open: boolean;
@@ -39,26 +39,24 @@ export default function Modal({
 
   if (!mounted || !open) return null;
 
-  return (
-    <>
-      <div className="fixed inset-0 z-50 isolate">
+  return createPortal(
+    <div className="fixed inset-0 z-50 isolate">
+      <div
+        className={`absolute inset-0 ${overlayClassName ?? 'bg-black/40'}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <div
-          className={`absolute inset-0 ${overlayClassName ?? 'bg-black/40'}`}
-          onClick={onClose}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 grid place-items-center pointer-events-none">
-          <div
-            role="dialog"
-            aria-modal="true"
-            className={`pointer-events-auto ${contentClassName ?? ''}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {children}
-          </div>
+          role="dialog"
+          aria-modal="true"
+          className={`pointer-events-auto ${contentClassName ?? ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
         </div>
       </div>
-      , document.body
-    </>
+    </div>,
+    document.body
   );
 }
