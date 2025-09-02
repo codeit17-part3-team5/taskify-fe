@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
-import NewDashboard from '../../../components/mydashboard/NewDashboard';
-import Modal from '../../../components/Modal';
-import InvitedDashboardList from '../../../components/mydashboard/InvitedDashboardList';
-import DashboardList from '../../../components/mydashboard/DashboardList';
-import CreateDashboard from '../../../components/mydashboard/CreateDashboard';
+import NewDashboard from '@/components/mydashboard/NewDashboard';
+import Modal from '../../components/Modal';
+import InvitedDashboardList from '@/components/mydashboard/InvitedDashboardList';
+import DashboardList from '@/components/mydashboard/DashboardList';
+import CreateDashboard from '@/components/mydashboard/CreateDashboard';
 import {
   DASHBOARD_CARDS,
   SIDEBAR_ITEMS,
