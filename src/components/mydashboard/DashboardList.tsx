@@ -1,25 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArrowRightimg from "@/assets/images/arrowrightimg.png";
-
-const COLOR_DOTS = {
-  green: "#22C55E",
-  purple: "#8B5CF6",
-  orange: "#F59E0B",
-  blue: "#3B82F6",
-  pink: "#EC4899",
-  gray: "#9CA3AF",
-} as const;
-
-type DotColor = keyof typeof COLOR_DOTS;
-
-type DashboardCard = {
-  id: string;
-  title: string;
-  dot: DotColor;
-  isOwnerCrown?: boolean;
-  href?: string;
-};
+import { COLOR_DOTS, DashboardCard } from "@/constants/dashboard";
 
 type DashboardListProps = {
   DASHBOARD_CARDS: DashboardCard[];
@@ -37,7 +19,7 @@ export default function DashboardList({ DASHBOARD_CARDS }: DashboardListProps) {
           <div className="flex items-center gap-4">
             <span
               className="inline-block w-2 h-2 rounded-full"
-              style={{ backgroundColor: card.dot }}
+              style={{ backgroundColor: COLOR_DOTS[card.dot] }}
             />
             <div className="text-[16px]">
               {card.title}
