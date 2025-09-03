@@ -1,40 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+## 기술 스택 및 프레임워크
 
-## Getting Started
+- **프레임워크**: Next.js (Pages Router 기반)
+- **언어**: TypeScript (필수)
+- **스타일링**: Tailwind CSS
+- **상태 관리**
+    - 클라이언트 상태: Zustand
+- **API 호출**: axios (인터셉터 기반 인증/헤더 처리)
+- **라우팅 방식**: Pages Router (익숙함 기반 선택)
+- **버전 정책**: 최신 안정화 버전 사용 (2025.08 기준)
 
-First, run the development server:
+| 영역 | 권장 버전 | 비고/이유 |
+| --- | --- | --- |
+| Next.js | 15.5.x | 최신 안정, Turbopack/ESLint 개선 |
+| TypeScript | 5.9 | 최신 기능, 호환성 강화 |
+| Tailwind CSS | 4.x | 설정 단순화, 성능 개선 |
+| Zustand | 5.0.8 | React 18/19 호환, 경량 상태관리 |
+| TanStack Query | 5.85.x | 캐싱·무한스크롤·페이지네이션 최적 |
+| axios | 1.11.x | 인터셉터 기반 인증 처리에 적합 |
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 협업 규칙
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 프로젝트 Init 후 패키지 신규 설치 및 버전 수정의 경우 꼭 팀원들에게 공지
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 커밋 컨벤션
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- prefix: `Feat`, `Fix` 등등
+- 설명: 구체적으로 작성 (한글 권장)
+    - 예: `Feat: 메인 페이지 내 메인 이미지 수정`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### 브랜치 전략
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `main`: 배포용
+- `develop`: 개발 통합 브랜치
+- `feature/동사-명사`: 기능 단위 브랜치 (예: `feature/add-login`)
+- Workflow:
+    - 로컬 작업 → **commit** → `feature` 브랜치 **push** → **PR** → `develop` 브랜치
+    - PR은 최소 1명 리뷰 / **approve** 후 **merge**
 
-## Learn More
+### 팀 운영 방식
 
-To learn more about Next.js, take a look at the following resources:
+- **데일리 스크럼**: 매일 오전 11시 (화/금 → 10시 30분)
+    - 어제 한 일 / 오늘 할 일 / 이슈 / PR & Merge 공유
+- **회고 진행**: 멘토 참여, 트러블슈팅 공유
+- **팀 멘토링**: 진행사항·이슈 상시 공유
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+### 파일 네이밍
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **컴포넌트**: PascalCase → `DashboardCard.tsx`, `Navbar.tsx`
+- **페이지**: PascalCase → `Login.tsx`, `MyDashboard.tsx`
+- **Hook**: camelCase + `use` prefix → `useAuth.ts`
+- **Store**: camelCase + `Store` suffix → `useAuthStore.ts`
+- **유틸/상수**: camelCase → `formatDate.ts`, `messages.ts`
+- **타입**: PascalCase → `User.ts`, `Dashboard.ts`
+- **폴더명**: 소문자-kebab-case, 도메인 단위는 단수형
 
-## Deploy on Vercel
+### 변수 네이밍
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- 상수명: `SNAKE_CASE`
+- 변수/함수명: `camelCase`
+- CSS 클래스명: `kebab-case`
