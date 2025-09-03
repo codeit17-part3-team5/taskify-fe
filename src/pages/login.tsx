@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LoginForm from "@/components/login/LoginForm";
 import SubmitButton from "@/components/shared/SubmitButton";
 import ToSignupPromt from "@/components/login/ToSignupPromt";

@@ -1,4 +1,4 @@
-import ColorChip from './ColorChip';
+import ColorChip from "./ColorChip";
 
 export default function ColorChipSection() {
   return (

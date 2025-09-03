@@ -1,4 +1,4 @@
-import PlusButton from './PlusButton';
+import PlusButton from "./PlusButton";
 
 type NewDashboardProps = {
   setOpen: (value: boolean) => void;

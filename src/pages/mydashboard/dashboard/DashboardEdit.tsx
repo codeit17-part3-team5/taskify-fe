@@ -1,8 +1,8 @@
-import BackButton from '@/components/dashboardedit/BackButton';
-import DashboardEditSection from '@/components/dashboardedit/DashboardEditSection';
-import MemberEdit from '@/components/dashboardedit/MemberEdit';
-import InviteEmailList from '@/components/dashboardedit/InviteEmailList';
-import { MOCK_MEMBERS, MOCK_INVITES } from '@/MockDashboardData';
+import BackButton from "@/components/dashboardedit/BackButton";
+import DashboardEditSection from "@/components/dashboardedit/DashboardEditSection";
+import MemberEdit from "@/components/dashboardedit/MemberEdit";
+import InviteEmailList from "@/components/dashboardedit/InviteEmailList";
+import { MOCK_MEMBERS, MOCK_INVITES } from "@/MockDashboardData";
 
 export default function DashboardEdit() {
   return (

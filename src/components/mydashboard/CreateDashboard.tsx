@@ -1,5 +1,5 @@
-import ColorChipSection from '../ColorChipSection';
-import DashBoardButton from './DashBoardButton';
+import ColorChipSection from "../ColorChipSection";
+import DashBoardButton from "./DashBoardButton";
 
 export default function CreateDashboard() {
   return (

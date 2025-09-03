@@ -1,19 +1,19 @@
-import { useState, useMemo } from 'react';
-import NewDashboard from '@/components/mydashboard/NewDashboard';
-import Modal from '../../components/Modal';
-import InvitedDashboardList from '@/components/mydashboard/InvitedDashboardList';
-import DashboardList from '@/components/mydashboard/DashboardList';
-import CreateDashboard from '@/components/mydashboard/CreateDashboard';
+import { useState, useMemo } from "react";
+import NewDashboard from "@/components/mydashboard/NewDashboard";
+import Modal from "../../components/Modal";
+import InvitedDashboardList from "@/components/mydashboard/InvitedDashboardList";
+import DashboardList from "@/components/mydashboard/DashboardList";
+import CreateDashboard from "@/components/mydashboard/CreateDashboard";
 import {
   DASHBOARD_CARDS,
   SIDEBAR_ITEMS,
   INVITED_DASHBOARDS,
-} from '@/MockDashboardData';
+} from "@/MockDashboardData";
 
 export default function MydashBoard() {
   const [open, setOpen] = useState(false);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const filteredInvites = useMemo(() => {
     const q = query.trim();

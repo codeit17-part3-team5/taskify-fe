@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import Messageimg from '@/assets/images/mesaageimg.png';
+import Image from "next/image";
+import Messageimg from "@/assets/images/mesaageimg.png";
 
 export default function EmptyInvitedDashboard() {
   return (
