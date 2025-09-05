@@ -1,4 +1,4 @@
-import api from "./axios";
+import instance from "./axios";
 import {
   Dashboard,
   CreateDashboardDto,
@@ -13,7 +13,7 @@ import {
 export const createDashboard = async (
   payload: CreateDashboardDto
 ): Promise<Dashboard> => {
-  const { data } = await api.post<Dashboard>("/dashboards", payload);
+  const { data } = await instance.post<Dashboard>("/dashboards", payload);
   return data;
 };
 
@@ -24,7 +24,7 @@ export const listDashboard = async (params: {
   page?: number;
   size?: number;
 }): Promise<DashboardListResponse> => {
-  const { data } = await api.get<DashboardListResponse>("/dashboards", {
+  const { data } = await instance.get<DashboardListResponse>("/dashboards", {
     params,
   });
   return data;
@@ -32,7 +32,7 @@ export const listDashboard = async (params: {
 
 // 대시보드 상세 조회
 export const getDashboard = async (dashboardId: number): Promise<Dashboard> => {
-  const { data } = await api.get<Dashboard>(`/dashboards/${dashboardId}`);
+  const { data } = await instance.get<Dashboard>(`/dashboards/${dashboardId}`);
   return data;
 };
 
@@ -41,7 +41,7 @@ export const updateDashboard = async (
   dashboardId: number,
   payload: UpdateDashboardDto
 ): Promise<Dashboard> => {
-  const { data } = await api.put<Dashboard>(
+  const { data } = await instance.put<Dashboard>(
     `/dashboards/${dashboardId}`,
     payload
   );
@@ -50,7 +50,7 @@ export const updateDashboard = async (
 
 // 대시보드 삭제
 export const deleteDashboard = async (dashboardId: number): Promise<void> => {
-  await api.delete(`/dashboards/${dashboardId}`);
+  await instance.delete(`/dashboards/${dashboardId}`);
 };
 
 // 대시보드 초대하기
@@ -58,7 +58,7 @@ export const inviteToDashboard = async (
   dashboardId: number,
   payload: CreateDashboardDto
 ): Promise<Invitation> => {
-  const { data } = await api.post<Invitation>(
+  const { data } = await instance.post<Invitation>(
     `/dashboards/${dashboardId}/invitations`,
     payload
   );
@@ -70,7 +70,7 @@ export const listDashboardInvitations = async (
   dashboardId: number,
   params?: { page?: number; size?: number }
 ): Promise<InvitationListResponse> => {
-  const { data } = await api.get<InvitationListResponse>(
+  const { data } = await instance.get<InvitationListResponse>(
     `/dashboards/${dashboardId}/invitations`,
     { params }
   );
@@ -82,5 +82,7 @@ export const cancelInvitation = async (
   dashboardId: number,
   invitationId: number
 ): Promise<void> => {
-  await api.delete(`/dashboards/${dashboardId}/invitation/${invitationId}`);
+  await instance.delete(
+    `/dashboards/${dashboardId}/invitation/${invitationId}`
+  );
 };

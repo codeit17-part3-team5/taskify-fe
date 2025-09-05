@@ -1,4 +1,4 @@
-import api from "./axios";
+import instance from "./axios";
 import {
   ListInvitationsQuery,
   ListInvitationsResponse,
@@ -10,7 +10,7 @@ import {
 export const listMyInvitation = async (
   params?: ListInvitationsQuery
 ): Promise<ListInvitationsResponse> => {
-  const { data } = await api.get<ListInvitationsResponse>("/invitations", {
+  const { data } = await instance.get<ListInvitationsResponse>("/invitations", {
     params,
   });
   return data;
@@ -21,7 +21,7 @@ export const respondInvitation = async (
   invitatioId: number,
   payload: RespondInvitationDto
 ): Promise<Invitation> => {
-  const { data } = await api.put<Invitation>(
+  const { data } = await instance.put<Invitation>(
     `/invitations/${invitatioId}`,
     payload
   );
