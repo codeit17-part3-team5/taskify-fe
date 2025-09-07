@@ -54,7 +54,7 @@ export default function CreateDashboard({
         <DashBoardButton
           className="bg-[#5534DA] text-white"
           onClick={handleCreate}
-          disabled={submitting || !title.trim()}
+          disabled={submitting || !title.trim() || !color}
         >
           생성
         </DashBoardButton>

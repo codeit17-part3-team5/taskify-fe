@@ -7,12 +7,8 @@ export const COLOR_DOTS = {
   gray: "#9CA3AF",
 } as const;
 
-export type DotColor = keyof typeof COLOR_DOTS;
+export type ColorKey = keyof typeof COLOR_DOTS;
 
-export type DashboardCard = {
-  id: string;
-  title: string;
-  dot: DotColor;
-  isOwnerCrown?: boolean;
-  href?: string;
-};
+export function isColorKey(value: string): value is ColorKey {
+  return value in COLOR_DOTS;
+}

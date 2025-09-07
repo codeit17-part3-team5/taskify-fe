@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { listDashboard, createDashboard } from "@/lib/dashboard";
 import Sidebar from "@/components/sidebar/Sidebar";
 import NewDashboard from "@/components/mydashboard/NewDashboard";
@@ -7,11 +7,8 @@ import InvitedDashboardList from "@/components/mydashboard/InvitedDashboardList"
 import DashboardList from "@/components/mydashboard/DashboardList";
 import Pagination from "@/components/mydashboard/Pagination";
 import CreateDashboard from "@/components/mydashboard/CreateDashboard";
-import {
-  DASHBOARD_CARDS,
-  SIDEBAR_ITEMS,
-  INVITED_DASHBOARDS,
-} from "@/MockDashboardData";
+import { SIDEBAR_ITEMS, INVITED_DASHBOARDS } from "@/MockDashboardData";
+import type { Dashboard } from "@/lib/types";
 
 const PAGE_SIZE = 5;
 
@@ -19,7 +16,10 @@ export default function MydashBoard() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [dashboards, setDashboards] = useState(DASHBOARD_CARDS);
+  const [dashboards, setDashboards] = useState<Dashboard[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const filteredInvites = useMemo(() => {
     const q = query.trim();
@@ -27,12 +27,33 @@ export default function MydashBoard() {
     return INVITED_DASHBOARDS.filter((r) => r.name.includes(q));
   }, [query]);
 
-  const start = (page - 1) * PAGE_SIZE;
-  const pageCards = useMemo(
-    () => dashboards.slice(start, start + PAGE_SIZE),
-    [dashboards, start]
-  );
+  useEffect(() => {
+    let cancelled = false;
 
+    const fetchDashboards = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await listDashboard({
+          navigationMethod: "pagination",
+          page,
+          size: PAGE_SIZE,
+        });
+        if (cancelled) return;
+        setDashboards(data.dashboards);
+        setTotal(data.totalCount);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchDashboards();
+    return () => {
+      cancelled = true;
+    };
+  }, [page]);
+
+  const pageCards = dashboards;
   const handleCreate = async ({
     title,
     color,
@@ -40,8 +61,7 @@ export default function MydashBoard() {
     title: string;
     color: string;
   }) => {
-    const created = await createDashboard({ title, color });
-    // setDashboards((prev) => [{ id: created.id, title: created.title, color: created.color }, ...prev]);
+    await createDashboard({ title, color });
     setOpen(false);
     setPage(1);
   };
@@ -61,18 +81,13 @@ export default function MydashBoard() {
             </div>
             <div className="flex justify-end gap-4 text-[14px]">
               <Pagination
-                total={DASHBOARD_CARDS.length}
+                total={total}
                 page={page}
                 onChange={setPage}
                 pageSize={PAGE_SIZE}
               />
             </div>
-            <InvitedDashboardList
-              invites={INVITED_DASHBOARDS}
-              query={query}
-              setQuery={setQuery}
-              filteredInvites={filteredInvites}
-            />
+            <InvitedDashboardList query={query} setQuery={setQuery} />
           </div>
           <Modal open={open} onClose={() => setOpen(false)}>
             <CreateDashboard
