@@ -1,9 +1,10 @@
 import React, { useState, FormEvent } from "react";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "next/router";
 import LoginForm from "@/components/login/LoginForm";
 import SubmitButton from "@/components/shared/SubmitButton";
 import ToSignupPromt from "@/components/login/ToSignupPromt";
 import AuthLogoLink from "@/components/shared/AuthLogoLink";
-import axios from "../lib/axios";
 
 const SUBMITBUTTON_WIDTH = "w-[520px]";
 const SUBMITBUTTON_HEIGHT = "h-[50px]";
@@ -11,20 +12,18 @@ const SUBMITBUTTON_HEIGHT = "h-[50px]";
 export default function login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const login = useAuthStore((state) => state.login);
+  const router = useRouter();
 
   const isValid = email !== "" && password !== "";
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    try {
-      await axios.post("/auth/login", {
-        email,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    console.log(email, password);
+
+    await login({ email, password });
+    router.push("/");
   }
 
   return (

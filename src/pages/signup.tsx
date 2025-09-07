@@ -1,9 +1,10 @@
 import React, { useState, FormEvent } from "react";
+import { useRouter } from "next/router";
+import { useAuthStore } from "@/stores/auth";
 import AuthLogoLink from "@/components/shared/AuthLogoLink";
 import SignupForm from "@/components/signup/SignupForm";
 import SubmitButton from "@/components/shared/SubmitButton";
 import ToLoginPrompt from "@/components/signup/ToLoginPrompt";
-import axios from "../lib/axios";
 
 const SUBMITBUTTON_WIDTH = "w-[520px]";
 const SUBMITBUTTON_HEIGHT = "h-[50px]";
@@ -13,6 +14,8 @@ export default function signup() {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const signup = useAuthStore((state) => state.signup);
+  const router = useRouter();
 
   const isValid =
     email !== "" &&
@@ -24,15 +27,8 @@ export default function signup() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    try {
-      await axios.post("/users", {
-        nickname,
-        email,
-        password,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    await signup({ email, password, nickname });
+    router.push("/login");
   }
 
   return (
