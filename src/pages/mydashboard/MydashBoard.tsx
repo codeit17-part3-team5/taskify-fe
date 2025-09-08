@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { listDashboard, createDashboard } from "@/lib/dashboard";
+import { useTokenStore } from "@/stores/token";
 import Sidebar from "@/components/sidebar/Sidebar";
 import NewDashboard from "@/components/mydashboard/NewDashboard";
 import Modal from "../../components/Modal";
@@ -12,6 +13,20 @@ import type { Dashboard } from "@/lib/types";
 
 const PAGE_SIZE = 5;
 
+type AcceptedPayload = {
+  id: number;
+  title: string;
+  color: string;
+  createdByMe: boolean;
+};
+function upsertById<T extends { id: number | string }>(list: T[], item: T) {
+  const i = list.findIndex((v) => v.id === item.id);
+  if (i === -1) return [item, ...list];
+  const copy = list.slice();
+  copy[i] = item;
+  return copy;
+}
+
 export default function MydashBoard() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -20,6 +35,7 @@ export default function MydashBoard() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { accessToken } = useTokenStore();
 
   const filteredInvites = useMemo(() => {
     const q = query.trim();
@@ -36,7 +52,16 @@ export default function MydashBoard() {
         page,
         size: PAGE_SIZE,
       });
-      setDashboards(data.dashboards);
+
+      setDashboards((prev) => {
+        if (page === 1) {
+          let next = prev;
+          for (const d of data.dashboards) next = upsertById(next, d);
+          return next.slice(0, PAGE_SIZE);
+        }
+        return data.dashboards;
+      });
+
       setTotal(data.totalCount);
     } finally {
       setLoading(false);
@@ -44,10 +69,37 @@ export default function MydashBoard() {
   }, [page]);
 
   useEffect(() => {
+    if (!accessToken) return;
     fetchDashboards();
-  }, [fetchDashboards]);
+  }, [accessToken, fetchDashboards]);
 
-  const pageCards = dashboards;
+  const handleAcceptInvite = useCallback(
+    (d: AcceptedPayload) => {
+      const now = new Date().toISOString();
+      const optimistic: Dashboard = {
+        id: d.id,
+        title: d.title,
+        color: d.color,
+        createdByMe: d.createdByMe,
+        createdAt: now,
+        updatedAt: now,
+        userId: 0,
+      };
+
+      setDashboards((prev) => upsertById(prev, optimistic));
+      setTotal((prev) => prev + 1);
+
+      if (page !== 1) {
+        setPage(1);
+      } else {
+        fetchDashboards();
+      }
+    },
+    [page, fetchDashboards]
+  );
+
+  const pageStart = (page - 1) * PAGE_SIZE;
+  const pageCards = dashboards.slice(pageStart, pageStart + PAGE_SIZE);
   const handleCreate = async ({
     title,
     color,
@@ -86,7 +138,11 @@ export default function MydashBoard() {
                 pageSize={PAGE_SIZE}
               />
             </div>
-            <InvitedDashboardList query={query} setQuery={setQuery} />
+            <InvitedDashboardList
+              query={query}
+              setQuery={setQuery}
+              onAccepted={handleAcceptInvite}
+            />
           </div>
           <Modal open={open} onClose={() => setOpen(false)}>
             <CreateDashboard

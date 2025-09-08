@@ -1,18 +1,21 @@
 import { useState, useMemo, useEffect } from "react";
+import { useTokenStore } from "@/stores/token";
+import { AxiosError } from "axios";
 import Image from "next/image";
 import Searchimg from "@/assets/images/Searchimg.png";
 import EmptyInvitedDashboard from "./EmptyInvitedDashboard";
 import { listMyInvitation, respondInvitation } from "@/lib/invitations";
-import type { Invitation } from "@/lib/types";
+import type { Invitation, Dashboard } from "@/lib/types";
+
+type AcceptedPayload = Pick<Dashboard, "id" | "title"> & {
+  color: string;
+  createdByMe: boolean;
+};
 
 type InviteProps = {
   query: string;
   setQuery: (value: string) => void;
-  onAccepted?: (dashboard: {
-    id: number;
-    title: string;
-    color: string;
-  }) => void;
+  onAccepted?: (dashboard: AcceptedPayload) => void;
 };
 
 export default function InvitedDashboardList({
@@ -24,8 +27,10 @@ export default function InvitedDashboardList({
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
+  const { accessToken } = useTokenStore();
 
   useEffect(() => {
+    if (!accessToken) return;
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -47,11 +52,11 @@ export default function InvitedDashboardList({
     return () => {
       cancelled = true;
     };
-  }, [query]);
+  }, [accessToken, query]);
 
-  // 추가 로드(무한 스크롤 느낌, 버튼으로 구현)
   const loadMore = async () => {
     if (!hasMore || loading) return;
+    if (!accessToken) return;
     setLoading(true);
     try {
       const res = await listMyInvitation({
@@ -71,21 +76,26 @@ export default function InvitedDashboardList({
     return <EmptyInvitedDashboard />;
   }
 
-  const handleAccept = async (row: {
-    id: number;
-    dashboard: { id: number; title: string };
-  }) => {
+  const handleAccept = async (row: Invitation) => {
+    const color = "purple";
+
+    const accepted: AcceptedPayload = {
+      id: row.dashboard.id,
+      title: row.dashboard.title,
+      color,
+      createdByMe: false,
+    };
+
     try {
       await respondInvitation(row.id, { inviteAccepted: true });
       setInvitations((prev) => prev.filter((it) => it.id !== row.id));
       onAccepted?.({
         id: row.dashboard.id,
         title: row.dashboard.title,
-        color: "blue",
+        color: "purple",
+        createdByMe: false,
       });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   const handleReject = async (id: number) => {

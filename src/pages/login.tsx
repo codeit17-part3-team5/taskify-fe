@@ -23,7 +23,7 @@ export default function Login() {
     console.log(email, password);
 
     await login({ email, password });
-    router.push("/");
+    router.push("/mydashboard/MydashBoard");
   }
 
   return (
