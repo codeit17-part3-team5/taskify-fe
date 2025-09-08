@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { useTokenStore } from "./token";
 import axios from "../lib/axios";
 
 type User = {
@@ -40,13 +41,14 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => set({ user }),
       setAccessToken: (token) => {
-        if (token) {
-          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-          set({ accessToken: token, isAuthenticated: true });
-        } else {
-          delete axios.defaults.headers.common.Authorization;
-          set({ accessToken: null, isAuthenticated: false });
-        }
+        // if (token) {
+        //   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        //   set({ accessToken: token, isAuthenticated: true });
+        // } else {
+        //   delete axios.defaults.headers.common.Authorization;
+        //   set({ accessToken: null, isAuthenticated: false });
+        // }
+        set({ accessToken: token });
       },
 
       login: async ({ email, password }) => {
@@ -56,17 +58,21 @@ export const useAuthStore = create<AuthState>()(
             email,
             password,
           });
+          console.log(
+            "[LOGIN] resp.accessToken:",
+            data.accessToken?.slice?.(0, 10)
+          );
 
-          if (data.accessToken) {
-            if (data?.accessToken && data?.user) {
-              get().setAccessToken(data.accessToken);
-              set({ user: data.user });
-            } else {
-              throw new Error("잘못된 로그인 응답입니다.");
-            }
-          } else {
-            alert("로그인에 실패했습니다.");
+          if (!data?.accessToken || !data?.user) {
+            throw new Error("잘못된 로그인 응답입니다.");
           }
+
+          useTokenStore.getState().setAccessToken(data.accessToken);
+          console.log(
+            "[LOGIN] after set accessToken:",
+            useTokenStore.getState().accessToken?.slice(0, 10)
+          );
+          set({ user: data.user, isAuthenticated: true });
         } catch (err) {
           console.error("로그인 실패: ", err);
           throw err;
@@ -99,18 +105,14 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: async () => {
-        get().setAccessToken(null);
-        set({ user: null });
+        useTokenStore.getState().clear();
+        set({ user: null, isAuthenticated: false });
       },
     }),
     {
       name: "auth",
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({
-        accessToken: s.accessToken,
-        user: s.user,
-        isAuthenticated: s.isAuthenticated,
-      }),
+      partialize: (s) => ({ isAuthenticated: s.isAuthenticated }),
     }
   )
 );
