@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { listDashboard, createDashboard } from "@/lib/dashboard";
 import Sidebar from "@/components/sidebar/Sidebar";
 import NewDashboard from "@/components/mydashboard/NewDashboard";
@@ -27,31 +27,25 @@ export default function MydashBoard() {
     return INVITED_DASHBOARDS.filter((r) => r.name.includes(q));
   }, [query]);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchDashboards = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await listDashboard({
-          navigationMethod: "pagination",
-          page,
-          size: PAGE_SIZE,
-        });
-        if (cancelled) return;
-        setDashboards(data.dashboards);
-        setTotal(data.totalCount);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchDashboards();
-    return () => {
-      cancelled = true;
-    };
+  const fetchDashboards = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await listDashboard({
+        navigationMethod: "pagination",
+        page,
+        size: PAGE_SIZE,
+      });
+      setDashboards(data.dashboards);
+      setTotal(data.totalCount);
+    } finally {
+      setLoading(false);
+    }
   }, [page]);
+
+  useEffect(() => {
+    fetchDashboards();
+  }, [fetchDashboards]);
 
   const pageCards = dashboards;
   const handleCreate = async ({
@@ -62,8 +56,13 @@ export default function MydashBoard() {
     color: string;
   }) => {
     await createDashboard({ title, color });
+    if (page === 1) {
+      await fetchDashboards();
+    } else {
+      setPage(1);
+    }
+
     setOpen(false);
-    setPage(1);
   };
 
   return (

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   listDashboardInvitations,
@@ -26,38 +26,34 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
 
   const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await listDashboardInvitations(dashboardId, { page, size });
-        if (cancelled) return;
-        setInvitations(res.invitations);
-        setTotalCount(res.totalCount);
-      } catch (e: unknown) {
-        if (cancelled) return;
-        if (axios.isAxiosError(e)) {
-          setError(
-            e.response?.data?.message ??
-              e.message ??
-              "초대 목록을 불러오지 못했습니다."
-          );
-        } else if (e instanceof Error) {
-          setError(e.message);
-        } else {
-          setError("초대 목록을 불러오지 못했습니다.");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+  const fetchInvites = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await listDashboardInvitations(dashboardId, { page, size });
+      setInvitations(res.invitations);
+      setTotalCount(res.totalCount);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        setError(
+          e.response?.data?.message ??
+            e.message ??
+            "초대 목록을 불러오지 못했습니다."
+        );
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("초대 목록을 불러오지 못했습니다.");
       }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
+    } finally {
+      setLoading(false);
+    }
   }, [dashboardId, page]);
+
+  useEffect(() => {
+    fetchInvites();
+  }, [fetchInvites]);
+
   const handleInvite = async () => {
     if (inviting) return;
     const email = window.prompt("초대할 이메일을 입력하세요:");
@@ -71,7 +67,8 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
     try {
       setInviting(true);
       await inviteToDashboard(dashboardId, { email });
-      setPage(1);
+      if (page === 1) await fetchInvites();
+      else setPage(1);
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         alert(
@@ -95,7 +92,13 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
     try {
       setCancelingId(invitationId);
       await cancelInvitation(dashboardId, invitationId);
-      setInvitations((prev) => prev.filter((i) => i.id !== invitationId));
+      setInvitations((prev) => {
+        const updated = prev.filter((i) => i.id !== invitationId);
+        if (updated.length === 0 && page > 1) {
+          setPage((p) => p - 1);
+        }
+        return updated;
+      });
       setTotalCount((tc) => Math.max(0, tc - 1));
       if (invitations.length === 1 && page > 1) setPage((p) => p - 1);
     } catch (e: unknown) {
