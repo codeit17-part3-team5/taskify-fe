@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "next/router";
 import LoginForm from "@/components/login/LoginForm";
 import SubmitButton from "@/components/shared/SubmitButton";
 import ToSignupPromt from "@/components/login/ToSignupPromt";
@@ -7,11 +9,22 @@ import AuthLogoLink from "@/components/shared/AuthLogoLink";
 const SUBMITBUTTON_WIDTH = "w-[520px]";
 const SUBMITBUTTON_HEIGHT = "h-[50px]";
 
-export default function login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const login = useAuthStore((state) => state.login);
+  const router = useRouter();
 
   const isValid = email !== "" && password !== "";
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    console.log(email, password);
+
+    await login({ email, password });
+    router.push("/");
+  }
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">
@@ -19,21 +32,22 @@ export default function login() {
       <div className="font-pretendard text-[20px] font-medium leading-[32px] text-[#333236] w-full text-center mt-[10px]">
         오늘도 만나서 반가워요!
       </div>
-      <LoginForm
-        email={email}
-        password={password}
-        onEmailChange={setEmail}
-        onPasswordChange={setPassword}
-      />
-      <div className="mt-[24px]">
-        <SubmitButton
-          width={SUBMITBUTTON_WIDTH}
-          height={SUBMITBUTTON_HEIGHT}
-          disabled={!isValid}
-          onClick={() => console.log(email, password)}
-          label="로그인"
+      <form onSubmit={handleSubmit}>
+        <LoginForm
+          email={email}
+          password={password}
+          onEmailChange={setEmail}
+          onPasswordChange={setPassword}
         />
-      </div>
+        <div className="mt-[24px]">
+          <SubmitButton
+            width={SUBMITBUTTON_WIDTH}
+            height={SUBMITBUTTON_HEIGHT}
+            disabled={!isValid}
+            label="로그인"
+          />
+        </div>
+      </form>
       <ToSignupPromt />
     </div>
   );
