@@ -16,14 +16,6 @@ type LoginResponse = {
   user: User;
 };
 
-type SignupResponse = {
-  // 백엔드 응답에 맞춰 유연하게 처리
-  success?: boolean;
-  message?: string;
-  accessToken?: string;
-  user?: User;
-};
-
 type AuthState = {
   isAuthenticated: boolean;
   user: User | null;

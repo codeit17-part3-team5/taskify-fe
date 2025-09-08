@@ -9,7 +9,7 @@ import ToLoginPrompt from "@/components/signup/ToLoginPrompt";
 const SUBMITBUTTON_WIDTH = "w-[520px]";
 const SUBMITBUTTON_HEIGHT = "h-[50px]";
 
-export default function signup() {
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
