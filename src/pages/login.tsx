@@ -20,10 +20,8 @@ export default function Login() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    console.log(email, password);
-
     await login({ email, password });
-    router.push("/");
+    router.push("/mydashboard");
   }
 
   return (
