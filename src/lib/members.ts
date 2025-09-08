@@ -13,5 +13,5 @@ export const listMembers = async (
 
 // 대시보드 멤버 삭제
 export const removeMember = async (memberId: number): Promise<void> => {
-  await instance.delete(`/members.${memberId}`);
+  await instance.delete(`/members/${memberId}`);
 };

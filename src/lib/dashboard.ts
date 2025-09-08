@@ -56,7 +56,7 @@ export const deleteDashboard = async (dashboardId: number): Promise<void> => {
 // 대시보드 초대하기
 export const inviteToDashboard = async (
   dashboardId: number,
-  payload: CreateDashboardDto
+  payload: CreateInvitationDto
 ): Promise<Invitation> => {
   const { data } = await instance.post<Invitation>(
     `/dashboards/${dashboardId}/invitations`,
@@ -83,6 +83,6 @@ export const cancelInvitation = async (
   invitationId: number
 ): Promise<void> => {
   await instance.delete(
-    `/dashboards/${dashboardId}/invitation/${invitationId}`
+    `/dashboards/${dashboardId}/invitations/${invitationId}`
   );
 };

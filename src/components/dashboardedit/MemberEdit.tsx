@@ -1,31 +1,114 @@
-type Member = {
-  id: string;
-  name: string;
-  email?: string;
-  avatarBg: string;
-  initial: string;
-  role?: 'owner' | 'admin' | 'member';
-  joinedAt?: string;
-};
+import { useState, useMemo, useEffect } from "react";
+import { listMembers, removeMember } from "@/lib/members";
+import type { Member } from "@/lib/types";
+import axios from "axios";
 
 type MemberEditProps = {
-  MOCK_MEMBERS: Member[];
+  dashboardId: number;
 };
 
-export default function MemberEdit({ MOCK_MEMBERS }: MemberEditProps) {
+export default function MemberEdit({ dashboardId }: MemberEditProps) {
+  const [page, setPage] = useState(1);
+  const size = 20;
+
+  const [members, setMembers] = useState<Member[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / size));
+
+  const getInitial = (m: Member) =>
+    (m.nickname?.[0] || m.email?.[0] || "?").toUpperCase();
+
+  const pickBg = (m: Member) => {
+    const seed = (m.nickname || m.email || "")
+      .split("")
+      .reduce((a, c) => a + c.charCodeAt(0), 0);
+    const palette = ["#7AC555", "#760DDE", "#FFA500", "#76A5EA", "#E876EA"];
+    return palette[seed % palette.length];
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await listMembers({ dashboardId, page, size });
+        if (cancelled) return;
+        setMembers(res.members);
+        setTotalCount(res.totalCount);
+      } catch (e: unknown) {
+        if (cancelled) return;
+        if (axios.isAxiosError(e)) {
+          const msg =
+            e.response?.status === 404
+              ? "대시보드의 멤버가 아닙니다."
+              : e.response?.data?.message ??
+                e.message ??
+                "멤버 목록을 불러오지 못했습니다.";
+          setError(msg);
+        } else if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("멤버 목록을 불러오지 못했습니다.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dashboardId, page]); // ✅ 의존성 추가
+
+  // 멤버 삭제
+  const handleRemove = async (memberId: number) => {
+    const ok = window.confirm("이 구성원을 삭제하시겠습니까?");
+    if (!ok) return;
+
+    try {
+      await removeMember(memberId);
+      // 낙관적 업데이트
+      setMembers((prev) => prev.filter((m) => m.id !== memberId));
+      setTotalCount((tc) => Math.max(0, tc - 1));
+      // 현재 페이지가 비면 이전 페이지로 이동
+      if (members.length === 1 && page > 1) {
+        setPage((p) => p - 1);
+      }
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        const msg =
+          e.response?.data?.message ??
+          e.message ??
+          "구성원 삭제 중 오류가 발생했습니다.";
+        alert(msg);
+      } else if (e instanceof Error) {
+        alert(e.message);
+      } else {
+        alert("구성원 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
   return (
     <div className="py-8 rounded-[16px] bg-white flex flex-col">
       <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
         구성원
         <div className="flex gap-4 items-center text-[14px] font-normal">
-          1 페이지 중 1<button>화살표 버튼</button>
+          {page} 페이지 중 {totalPages}
+          <button>화살표 버튼</button>
         </div>
       </div>
       <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
         이름
       </div>
       <ul className="divide-y divide-[#EEEEEE]">
-        {MOCK_MEMBERS.map((m) => (
+        {members.map((m) => (
           <li
             key={m.id}
             className="flex items-center justify-between px-[28px] py-5"
@@ -33,15 +116,19 @@ export default function MemberEdit({ MOCK_MEMBERS }: MemberEditProps) {
             <div className="flex items-center gap-3">
               <div
                 className="flex h-[38px] w-[38px] items-center justify-center rounded-full border-1 border-white text-white font-semibold"
-                style={{ backgroundColor: m.avatarBg }}
+                style={{ backgroundColor: pickBg(m) }}
+                title={m.nickname || m.email}
               >
-                {m.initial}
+                {getInitial(m)}
               </div>
               <div>
-                <div className="font-normal">{m.name}</div>
+                <div className="font-normal">{m.nickname || m.email}</div>
               </div>
             </div>
-            <button className="w-[84px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium">
+            <button
+              className="w-[84px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium"
+              onClick={() => handleRemove(m.id)}
+            >
               삭제
             </button>
           </li>

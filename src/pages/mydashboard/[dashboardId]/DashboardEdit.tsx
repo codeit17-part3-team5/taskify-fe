@@ -58,8 +58,8 @@ export default function DashboardEdit({ dashboardId }: DashboardEditProps) {
           <div className="w-[620px] flex flex-col gap-6">
             <div className="w-full flex flex-col gap-4">
               <DashboardEditSection dashboardId={dashboardId} />
-              <MemberEdit MOCK_MEMBERS={MOCK_MEMBERS} />
-              <InviteEmailList MOCK_INVITES={MOCK_INVITES} />
+              <MemberEdit dashboardId={dashboardId} />
+              <InviteEmailList dashboardId={dashboardId} />
             </div>
             <button
               className="text-center rounded-[8px] bg-[#FAFAFA] text-[18px] font-medium w-[320px] h-[62px] border border-[#D9D9D9]"
