@@ -11,15 +11,14 @@ type Column = {
   dashboardId: number;
 };
 
-export default function DashBoard() {
+export default function DashBoardDetail() {
+  const token = useTokenStore((state) => state.accessToken);
   const [isOpen, setIsOpen] = useState(false);
   const [columns, setColumns] = useState<Column[]>([]);
 
   const dashboardId = 16239;
 
   const handleCreateColumn = async (title: string, dashboardId: number) => {
-    const token = useTokenStore((state) => state.accessToken);
-
     if (columns.length >= 10) {
       alert("컬럼은 최대 10개까지 생성할 수 있습니다.");
       return;
