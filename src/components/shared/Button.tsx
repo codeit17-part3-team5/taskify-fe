@@ -16,8 +16,9 @@ export default function Button({
   return (
     <button
       type={type}
-      disabled={disabled}
-      className={className}
+      className={`${className} ${
+        disabled ? "bg-[#9FA6B2]" : "bg-[#5534DA] cursor-pointer"
+      }`}
       onClick={onClick}
     >
       {label}

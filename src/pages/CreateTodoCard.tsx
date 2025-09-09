@@ -49,14 +49,15 @@ export default function CreateTodoCard({
         columnId,
         title: title.trim(),
         description: desc.trim(),
-        dueDate: date || new Date().toISOString(),
+        dueDate: date
+          ? date.replace("T", " ")
+          : new Date().toISOString().slice(0, 16).replace("T", " "),
         tags: tag
           ? tag
               .split(/[,\s]+/)
               .map((t) => t.trim())
               .filter(Boolean)
           : [],
-        imageUrl: null,
       });
 
       onCreate?.({ name, title, desc, date, tag });
@@ -125,7 +126,7 @@ export default function CreateTodoCard({
             <div className="text-[#333236] font-medium text-[18px]">마감일</div>
             <div className="mt-[8px]">
               <Input
-                type="date"
+                type="datetime-local"
                 value={date}
                 className="w-full h-[42px] lg:h-[50px]"
                 onChange={setDate}
@@ -167,9 +168,9 @@ export default function CreateTodoCard({
             <div className="ml-[8px]">
               <Button
                 type="submit"
-                disabled={false}
+                disabled={!isValid}
                 label="생성"
-                className="w-[256px] h-[54px] bg-[#5534DA] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
+                className="w-[256px] h-[54px] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
               />
             </div>
           </div>

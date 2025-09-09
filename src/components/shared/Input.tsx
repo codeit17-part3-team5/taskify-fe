@@ -10,6 +10,7 @@ type InputProps = {
     | "button"
     | "submit"
     | "date"
+    | "datetime-local"
     | "fieldset";
   placeholder?: string;
   value: string;
