@@ -16,7 +16,7 @@ type InviteEmailListProps = {
 
 export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
   const [page, setPage] = useState(1);
-  const size = 10;
+  const size = 5;
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
