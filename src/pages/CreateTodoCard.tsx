@@ -49,14 +49,15 @@ export default function CreateTodoCard({
         columnId,
         title: title.trim(),
         description: desc.trim(),
-        dueDate: date || new Date().toISOString(),
+        dueDate: date
+          ? date.replace("T", " ")
+          : new Date().toISOString().slice(0, 16).replace("T", " "),
         tags: tag
           ? tag
               .split(/[,\s]+/)
               .map((t) => t.trim())
               .filter(Boolean)
           : [],
-        imageUrl: null,
       });
 
       onCreate?.({ name, title, desc, date, tag });
@@ -80,7 +81,7 @@ export default function CreateTodoCard({
                 placeholder="이름을 입력해 주세요"
                 type="text" // select 로 변경
                 value={name}
-                className="w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
                 onChange={setName}
               />
             </div>
@@ -98,7 +99,7 @@ export default function CreateTodoCard({
                   placeholder="제목을 입력해 주세요"
                   type="text"
                   value={title}
-                  className="w-full h-[42px] lg:h-[50px]"
+                  className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
                   onChange={setTitle}
                 />
               </div>
@@ -116,7 +117,7 @@ export default function CreateTodoCard({
                 placeholder="설명을 입력해 주세요"
                 type="textarea"
                 value={desc}
-                className="w-full h-[84px] lg:h-[126px]"
+                className="w-[295px] lg:w-full h-[84px] lg:h-[126px]"
                 onChange={setDesc}
               />
             </div>
@@ -125,9 +126,9 @@ export default function CreateTodoCard({
             <div className="text-[#333236] font-medium text-[18px]">마감일</div>
             <div className="mt-[8px]">
               <Input
-                type="date"
+                type="datetime-local"
                 value={date}
-                className="w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
                 onChange={setDate}
               />
             </div>
@@ -139,7 +140,7 @@ export default function CreateTodoCard({
                 placeholder="입력 후 Enter"
                 type="text"
                 value={tag}
-                className="w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
                 onChange={setTag}
               />
             </div>
@@ -160,16 +161,16 @@ export default function CreateTodoCard({
                 type="button"
                 disabled={false}
                 label="취소"
-                className="w-[256px] h-[54px] bg-[#FFFFFF] rounded-xl text-[#787486] text-[16px] leading-[26px] font-medium border border-[#D9D9D9]"
+                className="w-[144px] lg:w-[256px] h-[54px] bg-[#FFFFFF] rounded-xl text-[#787486] text-[16px] leading-[26px] font-medium border border-[#D9D9D9]"
                 onClick={onClose}
               />
             </div>
             <div className="ml-[8px]">
               <Button
                 type="submit"
-                disabled={false}
+                disabled={!isValid}
                 label="생성"
-                className="w-[256px] h-[54px] bg-[#5534DA] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
+                className="w-[144px] lg:w-[256px] h-[54px] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
               />
             </div>
           </div>
