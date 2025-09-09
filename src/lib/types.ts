@@ -91,3 +91,9 @@ export type ListMembersResponse = {
   members: Member[];
   totalCount: number;
 };
+
+export type DashboardsApiResponse = {
+  dashboards: Array<{ id: number; title: string }>;
+  totalCount: number;
+  cursorId: number | null;
+};
