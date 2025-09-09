@@ -3,7 +3,7 @@ import { Chip } from "./Chip";
 import Image from "next/image";
 import CreativeColumn from "@/components/CreativeColumn";
 import NewColumnModal from "@/components/NewColumnModal";
-import MyColumns from "@/components/MyColumns";
+import DashboardColumns from "@/components/DashboardColumns";
 import axios from "axios";
 import { login } from "./api/login";
 
