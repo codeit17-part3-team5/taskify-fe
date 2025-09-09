@@ -9,8 +9,8 @@ export default function SidebarDashboard({
 }: SidebarDashboardProps) {
   return (
     <div>
-      <div className="flex h-[46px] mb-[8px] pl-[12px] bg-[#E6E6FA]">
-        <div className="flex bg-[#B0E0E6] ">
+      <div className="flex h-[46px] pl-[12px]">
+        <div className="flex">
           <div className="content-center">
             <ColoredDot diameter={8} color={"purple"} />
           </div>

@@ -1,17 +1,22 @@
+import Image from "next/image";
 import SidebarDashboard from "./SidebarDashboard";
+import plusIcon from "@/assets/icons/plusIcon.png";
 
 export default function SidebarList() {
   return (
     <div className="flex-col mt-[56px]">
-      <div className="w-full flex col justify-between bg-[#FFEBCD]">
+      <div className="w-full flex col justify-between">
         <div className="text-xs text-[#787486] font-semibold leading-[20px]">
           Dash Boards
         </div>
-        {/* 생성 버튼 컴포넌트 */}
-        <div className="w-[20px] h-[20px] bg-[#B0E0E6]">.</div>
+        <div className="flex items-center justify-center w-[20px] h-[20px]">
+          <Image src={plusIcon} alt="추가아이콘" />
+        </div>
       </div>
-      <div className="mt-[16px]">
-        <SidebarDashboard dashboardTitle="테스트" />
+      <div className="flex items-center justify-between mt-[16px]">
+        <div className="content-center">
+          <SidebarDashboard dashboardTitle="테스트" />
+        </div>
       </div>
     </div>
   );
