@@ -21,7 +21,7 @@ export default function Login() {
     e.preventDefault();
 
     await login({ email, password });
-    router.push("/mydashboard");
+    router.push("/mydashboard/MydashBoard");
   }
 
   return (
