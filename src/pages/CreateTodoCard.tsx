@@ -56,7 +56,7 @@ export default function CreateTodoCard({
               .map((t) => t.trim())
               .filter(Boolean)
           : [],
-        imageUrl: null, // 필요 시 입력/업로드 연동
+        imageUrl: null,
       });
 
       onCreate?.({ name, title, desc, date, tag });
