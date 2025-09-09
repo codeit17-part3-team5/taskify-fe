@@ -5,12 +5,6 @@ import NewColumnModal from "@/components/dashboarddetail/NewColumnModal";
 import ColumnList from "@/components/dashboarddetail/ColumnList";
 import { useTokenStore } from "@/stores/token";
 
-const DashBoardHeader = "flex justify-between items-center px-[8px] py-[20px]";
-const DashBoardList =
-  "bg-[#F1EFFD] flex justify-start items-center gap-[10px] p-[12px] rounded-[4px]";
-const MainHeader =
-  "flex justify-center p-[18px] h-[70px] border-b-[1px] border-[#D9D9D9] bg-[#FFFFFF]";
-
 type Column = {
   id: number;
   title: string;

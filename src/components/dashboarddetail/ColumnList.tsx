@@ -1,7 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ColumnView from "./ColumnView";
-import CreativeColumn from "./CreativeColumn";
 
 type Column = {
   id: number;
