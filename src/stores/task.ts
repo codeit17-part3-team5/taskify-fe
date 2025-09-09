@@ -56,8 +56,14 @@ export const useTaskStore = create<TaskState>()(
         try {
           const data = await getTaskDetail(id);
           set({ current: data });
-        } catch (err: any) {
-          set({ currentError: err?.message ?? "상세 조회에 실패했습니다." });
+        } catch (err: unknown) {
+          const message =
+            err instanceof Error
+              ? err.message
+              : typeof err === "string"
+              ? err
+              : "상세 조회에 실패했습니다.";
+          set({ currentError: message });
         } finally {
           set({ isLoadingCurrent: false });
         }
