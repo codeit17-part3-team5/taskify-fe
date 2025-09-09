@@ -1,8 +1,7 @@
-// src/stores/task.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { createTask } from "@/lib/task";
-import type { CreateTaskRequest, Task } from "@/type/task";
+import { createTask, getTask as getTaskApi, getTaskDetail } from "@/lib/task";
+import type { CreateTaskRequest, Task, GetTask } from "@/type/task";
 
 type TaskState = {
   tasks: Task[];
@@ -11,10 +10,12 @@ type TaskState = {
 
   // CRUD
   createTask: (p: CreateTaskRequest) => Promise<Task>;
-  // 필요 시 확장:
-  // fetchTasks: (q?: { dashboardId?: number; columnId?: number }) => Promise<void>;
-  // updateTask: (id: number, patch: Partial<CreateTaskRequest>) => Promise<Task>;
-  // deleteTask: (id: number) => Promise<void>;
+  getTask: (id: number) => Promise<Task>;
+
+  current: GetTask | null;
+  isLoadingCurrent: boolean;
+  currentError: string | null;
+  loadCurrent: (id: number) => Promise<void>;
 
   // 로컬 상태 유틸
   upsertLocal: (t: Task) => void;
@@ -31,7 +32,6 @@ export const useTaskStore = create<TaskState>()(
       async createTask(payload) {
         set({ isCreating: true, createError: null });
         try {
-          console.log(payload);
           const created = await createTask(payload);
           get().upsertLocal(created);
           return created;
@@ -40,6 +40,26 @@ export const useTaskStore = create<TaskState>()(
           throw err;
         } finally {
           set({ isCreating: false });
+        }
+      },
+
+      async getTask(id) {
+        const data = await getTaskApi(id);
+        return data;
+      },
+
+      current: null,
+      isLoadingCurrent: false,
+      currentError: null,
+      async loadCurrent(id) {
+        set({ isLoadingCurrent: true, currentError: null });
+        try {
+          const data = await getTaskDetail(id);
+          set({ current: data });
+        } catch (err: any) {
+          set({ currentError: err?.message ?? "상세 조회에 실패했습니다." });
+        } finally {
+          set({ isLoadingCurrent: false });
         }
       },
 
