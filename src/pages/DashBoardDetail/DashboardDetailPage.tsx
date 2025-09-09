@@ -23,7 +23,7 @@ export default function DashBoard() {
   const [isOpen, setIsOpen] = useState(false);
   const [columns, setColumns] = useState<Column[]>([]);
 
-  const dashboardId = 16239;
+  const dashboardId = 16239; // 동적으로 가져오기
 
   const handleCreateColumn = async (title: string, dashboardId: number) => {
     const token = await login();
@@ -58,31 +58,28 @@ export default function DashBoard() {
 
   return (
     <>
-      
-        
+      <div className="flex">
+        {/* 사이드 메뉴 */}
 
-       
+        {/* 메인 컨텐츠 + 헤더 */}
 
-          {/* 컨텐츠 영역 */}
-          <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
-            {/* To do */}
-            <MyColumns columns={columns} />
+        {/* 메인 헤더 */}
 
-            {/* On progress */}
+        {/* 컨텐츠 영역 */}
+        <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
+          {/* To do */}
+          <MyColumns columns={columns} />
 
-            {/* Done */}
+          {/* 칼럼 추가하기 */}
+          <CreativeColumn onClick={() => setIsOpen(true)} />
 
-            {/* 칼럼 추가하기 */}
-            <CreativeColumn onClick={() => setIsOpen(true)} />
-
-            {isOpen && (
-              <NewColumnModal
-                onClose={() => setIsOpen(false)}
-                onCreate={(title) => handleCreateColumn(title, dashboardId)} // 대쉬보드id 동적으로 가져오기
-                overlapTitles={columns.map((col) => col.title)}
-              />
-            )}
-          </div>
+          {isOpen && (
+            <NewColumnModal
+              onClose={() => setIsOpen(false)}
+              onCreate={(title) => handleCreateColumn(title, dashboardId)} // 대쉬보드id 동적으로 가져오기
+              overlapTitles={columns.map((col) => col.title)}
+            />
+          )}
         </div>
       </div>
     </>
