@@ -9,10 +9,13 @@ import landing3 from "@/assets/images/landing3.png";
 import landing4 from "@/assets/images/landing4.png";
 import landing5 from "@/assets/images/landing5.png";
 import landing6 from "@/assets/images/landing6.png";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 
 export default function LandingMain() {
   return (
     <>
+      <Header />
       <section
         className="bg-black"
         style={{ "--brand": "#5534DA" } as React.CSSProperties}
@@ -147,6 +150,7 @@ export default function LandingMain() {
           </div>
         </Container>
       </section>
+      <Footer />
     </>
   );
 }
