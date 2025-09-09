@@ -1,8 +1,8 @@
 import React, { Children, useState } from "react";
 import axios from "axios";
-import CardModal from "./CardModal";
-import ColumnManageModal from "./ColumnManageModal";
-import { login } from "@/pages/api/login";
+// import CardModal from "./CardModal"; // 카드 생성 연결 test
+import EditColumnModal from "./EditColumnModal";
+import instance from "@/lib/axios";
 
 type Column = {
   id: number;
@@ -22,9 +22,7 @@ export default function ColumnView({ column }: ColumnItemProps) {
 
   const refreshCards = async () => {
     try {
-      const response = await axios.get(
-        `https://sp-taskify-api.vercel.app/17-5/cards`
-      );
+      const response = await instance.get(`/cards`);
       setCards(response.data);
     } catch (error) {
       console.log("카드 목록 가져오기 실패", error);
@@ -34,9 +32,7 @@ export default function ColumnView({ column }: ColumnItemProps) {
   // 카드 삭제 핸들러
   const handleCardsDelete = async () => {
     try {
-      const response = await axios.delete(
-        `https://sp-taskify-api.vercel.app/17-5/cards`
-      );
+      const response = await instance.delete(`/cards`);
 
       //카드 목록 초기화
       setCards([]);
@@ -49,19 +45,8 @@ export default function ColumnView({ column }: ColumnItemProps) {
 
   // 컬럼 제목 변경
   const handleColumnTitleUpdate = async (newTitle: string) => {
-    const token = await login();
-
     try {
-      await axios.put(
-        `https://sp-taskify-api.vercel.app/17-5/columns/${column.id}`,
-        { title: newTitle },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await instance.put(`/columns/${column.id}`, { title: newTitle });
 
       setColumnTitle(newTitle); // 화면 즉시 반영
       setManageModalOpen(false);
@@ -118,7 +103,7 @@ export default function ColumnView({ column }: ColumnItemProps) {
       </div>
 
       {/* 카드 추가 모달 렌더링 조건 */}
-      {cardModalOpen && (
+      {/* {cardModalOpen && (
         <div className="">
           <div>
             <CardModal
@@ -130,13 +115,13 @@ export default function ColumnView({ column }: ColumnItemProps) {
             />
           </div>
         </div>
-      )}
+      )} */}
 
       {/* 컬럼 관리 모달 렌더링 조건 */}
       {manageModalOpen && (
         <div>
           <div>
-            <ColumnManageModal
+            <EditColumnModal
               onClose={() => setManageModalOpen(false)}
               onDelete={handleCardsDelete}
               initialTitle={columnTitle}
