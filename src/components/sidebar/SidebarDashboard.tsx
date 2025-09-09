@@ -9,7 +9,6 @@ export default function SidebarDashboard({
   dashboardTitle,
   color,
 }: SidebarDashboardProps) {
-  console.log(color);
   return (
     <div>
       <div className="flex h-[46px] pl-[12px]">

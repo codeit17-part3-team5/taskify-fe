@@ -10,6 +10,16 @@ import { DASHBOARDS_INVALIDATED } from "@/lib/dashboardEvents";
 
 type SidebarItem = Pick<Dashboard, "id" | "title" | "color">;
 
+// 추후 타입으로 분리
+type DashboardsResponse = {
+  dashboards: {
+    id: number;
+    title: string;
+    color: string;
+    [key: string]: unknown;
+  }[];
+};
+
 export default function SidebarList() {
   const token = useTokenStore((s) => s.accessToken);
 
@@ -18,18 +28,17 @@ export default function SidebarList() {
   const refetch = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await instance.get("/dashboards", {
+      const res = await instance.get<DashboardsResponse>("/dashboards", {
         params: { navigationMethod: "pagination", page: 1, size: 10 },
       });
-      const list: SidebarItem[] =
-        (res.data?.dashboards ?? []).map((d: any) => ({
-          id: d.id,
-          title: d.title,
-          color: d.color,
-        })) ?? [];
+      const list: SidebarItem[] = res.data.dashboards.map((d) => ({
+        id: d.id,
+        title: d.title,
+        color: d.color,
+      }));
       setDashboards(list);
-    } catch (err: any) {
-      console.error("dashboards error:", err?.response ?? err);
+    } catch (err) {
+      console.error(err);
     }
   }, [token]);
 
