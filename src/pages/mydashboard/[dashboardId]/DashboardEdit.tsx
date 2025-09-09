@@ -4,7 +4,6 @@ import BackButton from "@/components/dashboardedit/BackButton";
 import DashboardEditSection from "@/components/dashboardedit/DashboardEditSection";
 import MemberEdit from "@/components/dashboardedit/MemberEdit";
 import InviteEmailList from "@/components/dashboardedit/InviteEmailList";
-import { MOCK_MEMBERS, MOCK_INVITES } from "@/MockDashboardData";
 import axios from "axios";
 import { deleteDashboard } from "@/lib/dashboard";
 

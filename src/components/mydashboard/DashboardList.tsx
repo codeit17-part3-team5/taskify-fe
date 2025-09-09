@@ -5,13 +5,14 @@ import { COLOR_DOTS, isColorKey } from "@/constants/dashboard";
 import type { Dashboard } from "@/lib/types";
 
 type DashboardListProps = {
-  DASHBOARD_CARDS: Dashboard[];
+  items: Dashboard[];
 };
 
-export default function DashboardList({ DASHBOARD_CARDS }: DashboardListProps) {
+export default function DashboardList({ items }: DashboardListProps) {
+  if (!items?.length) return null;
   return (
     <>
-      {DASHBOARD_CARDS.slice(0, 6).map((card) => (
+      {items.slice(0, 6).map((card) => (
         <Link
           href={`/mydashboard/${card.id}/edit`}
           key={card.id}
@@ -21,9 +22,7 @@ export default function DashboardList({ DASHBOARD_CARDS }: DashboardListProps) {
             <span
               className="inline-block w-2 h-2 rounded-full"
               style={{
-                backgroundColor: isColorKey(card.color)
-                  ? COLOR_DOTS[card.color]
-                  : card.color,
+                backgroundColor: card.color,
               }}
             />
             <div className="text-[16px]">

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTokenStore } from "@/stores/token";
 import { AxiosError } from "axios";
 import Image from "next/image";
@@ -29,34 +29,33 @@ export default function InvitedDashboardList({
   const [hasMore, setHasMore] = useState(true);
   const { accessToken } = useTokenStore();
 
-  useEffect(() => {
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const loadFirstPage = useCallback(async () => {
     if (!accessToken) return;
-    let cancelled = false;
-    const load = async () => {
-      setLoading(true);
-      try {
-        const res = await listMyInvitation({
-          size: 10,
-          title: query.trim() || undefined,
-          cursorId: undefined,
-        });
-        if (cancelled) return;
-        setInvitations(res.invitations ?? []);
-        setCursorId(res.cursorId ?? undefined);
-        setHasMore(!!res.cursorId);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-    load();
-    return () => {
-      cancelled = true;
-    };
+    setLoading(true);
+    try {
+      const res = await listMyInvitation({
+        size: 5,
+        title: query.trim() || undefined,
+        cursorId: undefined,
+      });
+      setInvitations(res.invitations ?? []);
+      setCursorId(res.cursorId ?? undefined);
+      setHasMore(!!res.cursorId);
+    } catch (e: unknown) {
+      // const msg =
+      //   (e as AxiosError)?.response?.data?.message ??
+      //   (e as Error)?.message ??
+      //   "초대 목록을 불러오지 못했습니다.";
+      // console.error("[InvitedDashboardList] first load:", msg);
+    } finally {
+      setLoading(false);
+    }
   }, [accessToken, query]);
 
-  const loadMore = async () => {
-    if (!hasMore || loading) return;
-    if (!accessToken) return;
+  const loadMore = useCallback(async () => {
+    if (!hasMore || loading || !accessToken) return;
     setLoading(true);
     try {
       const res = await listMyInvitation({
@@ -67,10 +66,48 @@ export default function InvitedDashboardList({
       setInvitations((prev) => [...prev, ...(res.invitations ?? [])]);
       setCursorId(res.cursorId ?? undefined);
       setHasMore(!!res.cursorId);
+    } catch (e: unknown) {
+      // const msg =
+      //   (e as AxiosError)?.response?.data?.message ??
+      //   (e as Error)?.message ??
+      //   "초대 목록을 더 불러오지 못했습니다.";
+      // console.error("[InvitedDashboardList] loadMore:", msg);
     } finally {
       setLoading(false);
     }
-  };
+  }, [hasMore, loading, accessToken, query, cursorId]);
+
+  useEffect(() => {
+    setInvitations([]);
+    setCursorId(undefined);
+    setHasMore(true);
+  }, [query]);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    loadFirstPage();
+  }, [accessToken, loadFirstPage]);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const el = sentinelRef.current;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          loadMore();
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 }
+    );
+
+    io.observe(el);
+    return () => {
+      io.unobserve(el);
+      io.disconnect();
+    };
+  }, [loadMore]);
 
   if (!loading && invitations.length === 0) {
     return <EmptyInvitedDashboard />;
@@ -157,6 +194,7 @@ export default function InvitedDashboardList({
                 </div>
               </div>
             ))}
+            <div ref={sentinelRef} />
             {invitations.length === 0 && !loading && (
               <div className="py-10 text-center text-[#9FA6B2]">
                 검색 결과가 없습니다

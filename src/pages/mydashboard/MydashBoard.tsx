@@ -53,15 +53,12 @@ export default function MydashBoard() {
         size: PAGE_SIZE,
       });
 
-      setDashboards((prev) => {
-        if (page === 1) {
-          let next = prev;
-          for (const d of data.dashboards) next = upsertById(next, d);
-          return next.slice(0, PAGE_SIZE);
-        }
-        return data.dashboards;
-      });
+      const sorted = [...data.dashboards].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
 
+      setDashboards(sorted);
       setTotal(data.totalCount);
     } finally {
       setLoading(false);
@@ -86,9 +83,6 @@ export default function MydashBoard() {
         userId: 0,
       };
 
-      setDashboards((prev) => upsertById(prev, optimistic));
-      setTotal((prev) => prev + 1);
-
       if (page !== 1) {
         setPage(1);
       } else {
@@ -98,8 +92,8 @@ export default function MydashBoard() {
     [page, fetchDashboards]
   );
 
-  const pageStart = (page - 1) * PAGE_SIZE;
-  const pageCards = dashboards.slice(pageStart, pageStart + PAGE_SIZE);
+  // const pageStart = (page - 1) * PAGE_SIZE;
+  // const pageCards = dashboards.slice(pageStart, pageStart + PAGE_SIZE);
   const handleCreate = async ({
     title,
     color,
@@ -128,7 +122,7 @@ export default function MydashBoard() {
           <div className="flex flex-col w-[1022px] gap-3">
             <div className="grid grid-cols-3 gap-[13px] w-full">
               <NewDashboard setOpen={setOpen} />
-              <DashboardList DASHBOARD_CARDS={pageCards} />
+              <DashboardList items={dashboards} />
             </div>
             <div className="flex justify-end gap-4 text-[14px]">
               <Pagination

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { listMembers, removeMember } from "@/lib/members";
+import Pagination from "../mydashboard/Pagination";
 import type { Member } from "@/lib/types";
 import axios from "axios";
 
@@ -9,14 +10,11 @@ type MemberEditProps = {
 
 export default function MemberEdit({ dashboardId }: MemberEditProps) {
   const [page, setPage] = useState(1);
-  const size = 20;
-
+  const size = 5;
   const [members, setMembers] = useState<Member[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
   const getInitial = (m: Member) =>
@@ -39,7 +37,8 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
       try {
         const res = await listMembers({ dashboardId, page, size });
         if (cancelled) return;
-        setMembers(res.members);
+        const filtered = res.members.filter((m) => !m.isOwner);
+        setMembers(filtered);
         setTotalCount(res.totalCount);
       } catch (e: unknown) {
         if (cancelled) return;
@@ -64,19 +63,16 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
     return () => {
       cancelled = true;
     };
-  }, [dashboardId, page]); // ✅ 의존성 추가
+  }, [dashboardId, page]);
 
-  // 멤버 삭제
   const handleRemove = async (memberId: number) => {
     const ok = window.confirm("이 구성원을 삭제하시겠습니까?");
     if (!ok) return;
 
     try {
       await removeMember(memberId);
-      // 낙관적 업데이트
       setMembers((prev) => prev.filter((m) => m.id !== memberId));
       setTotalCount((tc) => Math.max(0, tc - 1));
-      // 현재 페이지가 비면 이전 페이지로 이동
       if (members.length === 1 && page > 1) {
         setPage((p) => p - 1);
       }
@@ -100,8 +96,12 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
       <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
         구성원
         <div className="flex gap-4 items-center text-[14px] font-normal">
-          {page} 페이지 중 {totalPages}
-          <button>화살표 버튼</button>
+          <Pagination
+            total={totalCount}
+            page={page}
+            onChange={setPage}
+            pageSize={size}
+          />
         </div>
       </div>
       <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">

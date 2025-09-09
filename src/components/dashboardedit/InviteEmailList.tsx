@@ -6,6 +6,7 @@ import {
   inviteToDashboard,
   cancelInvitation,
 } from "@/lib/dashboard";
+import Pagination from "../mydashboard/Pagination";
 import Plusinviteing from "@/assets/images/Plusinvite.png";
 import type { Invitation } from "@/lib/types";
 
@@ -123,8 +124,12 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
       <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
         초대 내역
         <div className="flex gap-4 items-center text-[14px] font-normal">
-          {page} 페이지 중 {totalPages}
-          <button>화살표 버튼</button>
+          <Pagination
+            total={totalCount}
+            page={page}
+            onChange={setPage}
+            pageSize={size}
+          />
           <button
             className="w-[105px] h-8 bg-[#5534DA] text-white text-[14px] rounded-[4px] flex items-center justify-center gap-2"
             onClick={handleInvite}
