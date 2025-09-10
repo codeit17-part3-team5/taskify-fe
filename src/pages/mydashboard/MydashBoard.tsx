@@ -113,33 +113,44 @@ export default function MydashBoard() {
 
   return (
     <>
-      <header className="w-[1920px] h-[70px] bg-[#ffffff]">내 대시보드</header>
-      <div className="flex flex-1">
-        <aside className="w-[300px] h-[1550px] px-6 py-5 bg-[#ffffff]">
+      <div className="flex min-h-screen bg-[#FAFAFA]">
+        <aside className="w-[300px] bg-white px-6 py-5 sticky top-0 h-screen z-20">
           <Sidebar />
         </aside>
-        <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
-          <div className="flex flex-col desktop:w-[1022px] tablet:w-[504px] w-[260px] gap-3">
-            <div className="grid grid-cols-3 gap-[13px] w-full">
-              <NewDashboard setOpen={setOpen} />
-              <DashboardList items={dashboards} />
+
+        <div className="flex-1">
+          <header className="h-[70px] bg-white flex items-center px-6 shadow-sm">
+            내 대시보드
+          </header>
+
+          <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
+            <div className="flex flex-col w-[1022px] gap-3">
+              <div className="grid grid-cols-3 gap-[13px] w-full">
+                <NewDashboard setOpen={setOpen} />
+                <DashboardList items={dashboards} />
+              </div>
+              <div className="flex justify-end gap-4 text-[14px]">
+                <Pagination
+                  total={total}
+                  page={page}
+                  onChange={setPage}
+                  pageSize={PAGE_SIZE}
+                />
+              </div>
+              <InvitedDashboardList
+                query={query}
+                setQuery={setQuery}
+                onAccepted={handleAcceptInvite}
+              />
             </div>
-            <div className="flex justify-end gap-4 text-[14px]">
-              <Pagination total={total} page={page} onChange={setPage} />
-            </div>
-            <InvitedDashboardList
-              query={query}
-              setQuery={setQuery}
-              onAccepted={handleAcceptInvite}
-            />
-          </div>
-          <Modal open={open} onClose={() => setOpen(false)}>
-            <CreateDashboard
-              onCancel={() => setOpen(false)}
-              onCreate={handleCreate}
-            />
-          </Modal>
-        </main>
+            <Modal open={open} onClose={() => setOpen(false)}>
+              <CreateDashboard
+                onCancel={() => setOpen(false)}
+                onCreate={handleCreate}
+              />
+            </Modal>
+          </main>
+        </div>
       </div>
     </>
   );

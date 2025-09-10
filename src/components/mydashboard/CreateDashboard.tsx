@@ -2,6 +2,7 @@ import { useState } from "react";
 import ColorChipSection from "../ColorChipSection";
 import DashBoardButton from "./DashBoardButton";
 import { error } from "console";
+import { emitDashboardsInvalidated } from "@/lib/dashboardEvents";
 
 type CreateDashboardProps = {
   onCancel: () => void;
@@ -21,6 +22,7 @@ export default function CreateDashboard({
     setSubmitting(true);
     try {
       await onCreate({ title: title, color });
+      emitDashboardsInvalidated(); // 생성 시 대시보드 목록 다시 불러오기
     } finally {
       setSubmitting(false);
     }
