@@ -4,6 +4,8 @@ import CreativeColumn from "@/components/dashboarddetail/CreativeColumn";
 import NewColumnModal from "@/components/dashboarddetail/NewColumnModal";
 import ColumnList from "@/components/dashboarddetail/ColumnList";
 import { useTokenStore } from "@/stores/token";
+import Navbar from "../navbar";
+import Sidebar from "@/components/sidebar/Sidebar";
 
 type Column = {
   id: number;
@@ -43,11 +45,13 @@ export default function DashBoardDetail() {
     <>
       <div className="flex">
         {/* 사이드 메뉴 */}
-
+        <div>
+          <Sidebar />
+        </div>
         {/* 메인 컨텐츠 + 헤더 */}
         <div className="flex-1 flex flex-col bg-[#FAFAFA]">
           {/* 메인 헤더 */}
-
+          <Navbar />
           {/* 컨텐츠 영역 */}
           <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
             {/* To do */}
