@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import instance from "@/lib/axios";
 
 const modalbg = "bg-opacity-50 flex justify-center items-center";

@@ -1,6 +1,6 @@
-import React, { Children, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import axios from "axios";
-// import CardModal from "./CardModal"; //카드 생성 모달 연결
+import CreateTodoCard from "@/pages/CreateTodoCard";
 import EditColumnModal from "./EditColumnModal";
 import instance from "@/lib/axios";
 
@@ -14,12 +14,39 @@ type ColumnViewProps = {
   column: Column;
 };
 
+type Card = {
+  id: number;
+  assigneeUserId: string;
+  dashboardId: number;
+  columnId: number;
+  title: string;
+  description: string;
+  dueDate: string;
+  tags: string[];
+  imageUrl: string;
+};
+
+export type Member = {
+  id: number;
+  email: string;
+  nickname: string;
+  userId: number;
+};
+
 export default function ColumnView({ column }: ColumnViewProps) {
   const [cardModalOpen, setCardModalOpen] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const [columnTitle, setColumnTitle] = useState(column.title);
+  const [members, setMembers] = useState<Member[]>([]);
 
+  //카드 생성
+  const handleCreateCard = () => {
+    refreshCards();
+    setCardModalOpen(false);
+  };
+
+  // 카드 생성 후 새로고침
   const refreshCards = async () => {
     try {
       const response = await instance.get(`/cards`);
@@ -57,6 +84,26 @@ export default function ColumnView({ column }: ColumnViewProps) {
     }
   };
 
+  // 멤버 리스트 가져오기
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await instance.get(`/members`, {
+          params: {
+            page: 1,
+            size: 20,
+            dashboardId: column.dashboardId,
+          },
+        });
+        setMembers(response.data);
+      } catch (error) {
+        console.log("멤버 리스트 가져오기 실패", error);
+      }
+    };
+
+    fetchMembers();
+  }, [column.dashboardId]);
+
   return (
     <>
       <div className="flex flex-col px-4 py-6 flex-shrink-0 min-w-[300px]  border-r border-[#EEEEEE]">
@@ -91,31 +138,32 @@ export default function ColumnView({ column }: ColumnViewProps) {
 
       {/* 카드 목록 렌더링 */}
       <div className="flex flex-col gap-2 mt-4 px-4">
-        {cards.map((card: any) => (
+        {cards.map((card: Card) => (
           <div
             key={card.id}
             className="border rounded p-3 bg-white shadow text-sm text-gray-500"
           >
             <div className="font-semibold">{card.title}</div>
-            <div className="text-gray-300">{card.assignee}</div>
+            <div className="text-gray-300">{card.assigneeUserId}</div>
           </div>
         ))}
       </div>
 
       {/* 카드 추가 모달 렌더링 조건 */}
-      {/* {cardModalOpen && (
+      {cardModalOpen && (
         <div className="">
           <div>
-            <CardModal
+            <CreateTodoCard
               onClose={() => setCardModalOpen(false)}
-              columnId={column.id}
+              onCreate={handleCreateCard}
+              assigneeUserId={0} // 0 가능? 테스트
               dashboardId={column.dashboardId}
-              teamId="17-5"
-              onCardCreated={refreshCards}
+              columnId={column.id}
+              members={members}
             />
           </div>
         </div>
-      )} */}
+      )}
 
       {/* 컬럼 관리 모달 렌더링 조건 */}
       {manageModalOpen && (
