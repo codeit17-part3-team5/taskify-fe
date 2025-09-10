@@ -41,7 +41,7 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
 
   if (isLoadingCurrent) {
     return (
-      <div className="max-w-[372px] md:max-w-[678px] lg:max-w-[730px] mx-auto animate-pulse">
+      <div className="max-w-[372px] tablet:max-w-[678px] desktop:max-w-[730px] mx-auto animate-pulse">
         <div className="h-8 bg-gray-200 rounded w-2/3" />
         <div className="mt-4 h-4 bg-gray-200 rounded w-1/3" />
         <div className="mt-6 h-40 bg-gray-100 rounded" />
@@ -60,7 +60,7 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
   if (!current) return null;
 
   return (
-    <div className="max-w-[372px] md:max-w-[678px] lg:max-w-[730px] mx-auto pl-[18px] pt-[30px] pr-[38px]">
+    <div className="max-w-[372px] tablet:max-w-[678px] desktop:max-w-[730px] mx-auto pl-[18px] pt-[30px] pr-[38px]">
       <header className="relative">
         <div className="flex justify-between">
           <h1 className="text-[#333236] font-bold text-[24px] leading-[32px]">
@@ -81,20 +81,19 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
           </div>
         </div>
       </header>
+
       {isManageOpen && (
         <div className="flex flex-col items-center justify-center absolute z-[9999] ml-[528px] w-[93px] h-[82px] border border-[#D9D9D9] rounded-sm bg-[#FFFFFF]">
           <div className="flex flex-col items-center justify-center w-[81px] h-[68px]">
             <button
               type="button"
-              className="w-full h-[32px] px-[16px] py-[4px] rounded-sm text-[14px] leading-[24px] hover:text-[#5534DA] hover:bg-[#F1EFFD]
-                   transition-colors cursor-pointer"
+              className="w-full h-[32px] px-[16px] py-[4px] rounded-sm text-[14px] leading-[24px] hover:text-[#5534DA] hover:bg-[#F1EFFD] transition-colors cursor-pointer"
             >
               수정하기
             </button>
             <button
               type="button"
-              className="mt-[4px] w-full h-[32px] px-[16px] py-[4px] rounded-sm text-[14px] leading-[24px] hover:text-[#5534DA] hover:bg-[#F1EFFD]
-                   transition-colors cursor-pointer"
+              className="mt-[4px] w-full h-[32px] px-[16px] py-[4px] rounded-sm text-[14px] leading-[24px] hover:text-[#5534DA] hover:bg-[#F1EFFD] transition-colors cursor-pointer"
             >
               삭제하기
             </button>
@@ -103,13 +102,17 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
       )}
 
       <main className="mt-[24px]">
-        <div className="relative flex flex-col gap-3 md:flex-row">
+        {/* 모바일: 세로 스택 / 태블릿 이상: 가로 배치 */}
+        <div className="relative flex flex-col gap-3 tablet:flex-row">
+          {/* ASIDE: 모바일/태블릿에서는 두 번째(오른쪽), 데스크톱에서는 우측 고정 */}
           <aside
-            className="order-first w-full
-              md:order-none md:w-[200px] md:absolute md:top-0 md:right-0 md:max-h-40 md:z-10
+            className="
+              order-2 tablet:order-2 w-full
+              tablet:w-[200px]
+              desktop:absolute desktop:top-0 desktop:right-0 desktop:max-h-40 desktop:z-10
               overflow-y-auto border border-[#D9D9D9] rounded-lg p-2 bg-white"
           >
-            <div className="w-[120px] h-[126px] font-medium flex flex-col justify-between items-center md:flex-col md:items-start ml-[16px] my-auto">
+            <div className="w-[120px] h-[126px] font-medium flex flex-col justify-between items-center tablet:items-start ml-[16px] my-auto">
               <div>
                 <div className="text-[12px] text-[#000000] font-semibold leading-[20px]">
                   담당자
@@ -133,6 +136,7 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
                   </div>
                 </div>
               </div>
+
               <div>
                 <div className="text-[12px] text-[#000000] font-semibold leading-[20px]">
                   마감일
@@ -143,7 +147,9 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
               </div>
             </div>
           </aside>
-          <div className="order-last md:order-none flex justify-between md:pr-40">
+
+          {/* CONTENT: 모바일/태블릿에서 첫 번째(왼쪽), 데스크톱에서는 오른쪽 패딩 확보 */}
+          <div className="order-1 tablet:order-1 flex justify-between desktop:pr-40">
             <div className="flex">
               <div className="pr-[20px] border-r border-[#D9D9D9]">
                 <TodoCardStatus size="small" status="todo" />
@@ -153,10 +159,12 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
           </div>
         </div>
       </main>
+
       <article>
-        <div className="max-w-[295px] md:max-w-[349px] lg:max-w-[470px] mt-[16px] text-[#000000] text-[14px] leading-[24px]">
+        <div className="max-w-[295px] tablet:max-w-[349px] desktop:max-w-[470px] mt-[16px] text-[#000000] text-[14px] leading-[24px]">
           {current.description}
         </div>
+
         {current.imageUrl ? (
           <div className="relative mt-[8px] w-full max-w-[445px] h-[260px] overflow-hidden rounded-lg">
             <Image
@@ -164,7 +172,7 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
               alt="첨부 이미지"
               fill
               className="object-cover rounded-lg"
-              sizes="(max-width: 768px) 100vw, 445px"
+              sizes="(max-width: 744px) 100vw, 445px"
             />
             <noscript>
               <a href={current.imageUrl}>이미지 열기</a>
@@ -172,7 +180,8 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
           </div>
         ) : null}
       </article>
-      <section className="w-[295px] lg:w-[450px] mt-[16px]">
+
+      <section className="w-[295px] desktop:w-[450px] mt-[16px]">
         <div className="text-[16px] text-[#333236] leading-[26px] font-medium">
           댓글
         </div>
