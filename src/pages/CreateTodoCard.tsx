@@ -4,6 +4,7 @@ import Image from "next/image";
 import uploadImageBanner from "@/assets/images/upload-image-banner.svg";
 import Input from "@/components/shared/Input";
 import Button from "@/components/shared/Button";
+import type { Member } from "@/components/dashboarddetail/ColumnView";
 
 type CreateTodoCardProps = {
   onClose: () => void;
@@ -15,19 +16,21 @@ type CreateTodoCardProps = {
     tag: string;
   }) => void;
 
-  assigneeUserId: number;
+  // assigneeUserId: number;
   dashboardId: number;
   columnId: number;
+  members: Member[];
 };
 
 export default function CreateTodoCard({
   onClose,
   onCreate,
-  assigneeUserId,
+  // assigneeUserId,
   dashboardId,
   columnId,
+  members = [], // 테스트용 빈 배열
 }: CreateTodoCardProps) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // assigneeUserId
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [date, setDate] = useState("");
@@ -42,9 +45,13 @@ export default function CreateTodoCard({
     e.preventDefault();
     if (!isValid || isCreating) return;
 
+    // member 배열에서 id === Number(name)인 멤버를 찾음 -> 있다면 userId를 꺼내서 assigneeUserId에 넣음
+    const selectMember = members.find((member) => member.id === Number(name));
+    const assigneeUserId = selectMember?.userId ?? 0;
+
     try {
       await createTask({
-        assigneeUserId,
+        assigneeUserId, // select로 받은 userId
         dashboardId,
         columnId,
         title: title.trim(),
@@ -77,13 +84,18 @@ export default function CreateTodoCard({
           <section>
             <div className="text-[#333236] font-medium text-[18px]">담당자</div>
             <div className="mt-[8px]">
-              <Input
-                placeholder="이름을 입력해 주세요"
-                type="text" // select 로 변경
+              <select
                 value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
-                onChange={setName}
-              />
+              >
+                <option value="">담당자 선택</option>
+                {members.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.nickname}
+                  </option>
+                ))}
+              </select>
             </div>
           </section>
           <section>
