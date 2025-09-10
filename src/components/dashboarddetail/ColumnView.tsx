@@ -95,7 +95,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
             dashboardId: column.dashboardId,
           },
         });
-        setMembers(response.data);
+        setMembers(response.data.members);
       } catch (error) {
         console.log("멤버 리스트 가져오기 실패", error);
       }

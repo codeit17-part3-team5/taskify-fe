@@ -28,7 +28,7 @@ export default function CreateTodoCard({
   // assigneeUserId,
   dashboardId,
   columnId,
-  members,
+  members = [], // 테스트용 빈 배열
 }: CreateTodoCardProps) {
   const [name, setName] = useState(""); // assigneeUserId
   const [title, setTitle] = useState("");
