@@ -4,6 +4,13 @@ import largeExit from "@/assets/icons/large-exit.svg";
 import TodoCardStatus from "@/components/todocarddetail/TodoCardStatus";
 import { useEffect, useRef, useState } from "react";
 import { useTaskStore } from "@/stores/task";
+import {
+  CommentItem,
+  createComment,
+  deleteComment,
+  fetchComments,
+  updateComment,
+} from "@/lib/comments";
 
 type ReadTodoCardProps = {
   cardId: number;
@@ -26,6 +33,139 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
   const [isManageOpen, setIsManageOpen] = useState(false);
 
   const lastIdRef = useRef<number | null>(null);
+
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [nextCursor, setNextCursor] = useState<number | null>(null);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [actionErrorId, setActionErrorId] = useState<number | null>(null);
+  const [actionErrorMsg, setActionErrorMsg] = useState<string>("");
+
+  // 수정 시작
+  const handleStartEdit = (c: CommentItem) => {
+    setEditingId(c.id);
+    setEditText(c.content);
+    setActionErrorId(null);
+    setActionErrorMsg("");
+  };
+
+  // 수정 취소
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditText("");
+    setActionErrorId(null);
+    setActionErrorMsg("");
+  };
+
+  // 수정 저장
+  const handleSaveEdit = async (commentId: number) => {
+    const next = editText.trim();
+    if (!next) {
+      setActionErrorId(commentId);
+      setActionErrorMsg("내용을 입력해 주세요.");
+      return;
+    }
+    setActionLoadingId(commentId);
+    setActionErrorId(null);
+    setActionErrorMsg("");
+
+    try {
+      const updated = await updateComment({ commentId, content: next });
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId
+            ? {
+                ...c,
+                content: updated?.content ?? next,
+                updatedAt: updated?.updatedAt ?? c.updatedAt,
+              }
+            : c
+        )
+      );
+      handleCancelEdit();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  // 삭제
+  const handleDelete = async (commentId: number) => {
+    if (typeof window !== "undefined") {
+      const ok = window.confirm("이 댓글을 삭제하시겠습니까?");
+      if (!ok) return;
+    }
+    setActionLoadingId(commentId);
+    setActionErrorId(null);
+    setActionErrorMsg("");
+
+    try {
+      await deleteComment(commentId);
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      if (editingId === commentId) handleCancelEdit();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 최초/카드 변경 시 목록 로딩
+  useEffect(() => {
+    if (!cardId) return;
+    let cancelled = false;
+
+    (async () => {
+      setIsLoadingComments(true);
+      setCommentsError(null);
+      try {
+        const res = await fetchComments({ cardId, size: 10 });
+        if (cancelled) return;
+        setComments(res.comments);
+        setNextCursor(res.cursorId);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setIsLoadingComments(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cardId]);
+
+  // 더 보기
+  const handleLoadMore = async () => {
+    if (nextCursor == null || isLoadingMore) return;
+    setIsLoadingMore(true);
+    try {
+      const res = await fetchComments({
+        cardId,
+        size: 10,
+        cursorId: nextCursor,
+      });
+      // 중복 방지(혹시 서버가 중복을 줄 경우 대비)
+      setComments((prev) => {
+        const existing = new Set(prev.map((c) => c.id));
+        const merged = [
+          ...prev,
+          ...res.comments.filter((c) => !existing.has(c.id)),
+        ];
+        return merged;
+      });
+      setNextCursor(res.cursorId);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
   useEffect(() => {
     if (!cardId) return;
     if (lastIdRef.current === cardId) return;
@@ -37,6 +177,25 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
     e
   ) => {
     setComment(e.currentTarget.value);
+  };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    if (!isValid) return;
+
+    try {
+      await createComment({
+        content: comment.trim(),
+        cardId: Number(cardId),
+        columnId: Number(54935), // TODO: 동적으로 변경 필요
+        dashboardId: Number(16248), // TODO: 동적으로 변경 필요
+      });
+
+      setComment(""); // 성공 시 입력창 비우기
+      useTaskStore.getState().loadCurrent(cardId);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (isLoadingCurrent) {
@@ -58,6 +217,8 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
   }
 
   if (!current) return null;
+
+  const isValid = comment.trim().length > 0;
 
   return (
     <div className="max-w-[372px] tablet:max-w-[678px] desktop:max-w-[730px] mx-auto pl-[18px] pt-[30px] pr-[38px]">
@@ -186,7 +347,7 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
           댓글
         </div>
         <div className="relative mt-[4px]">
-          <form>
+          <form onSubmit={handleSubmit}>
             <textarea
               placeholder="댓글 작성하기"
               value={comment}
@@ -194,14 +355,169 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
               className="w-full h-[110px] pt-[16px] pl-[16px] rounded-md border border-[#D9D9D9]"
             />
             <button
-              type="button"
-              className="absolute right-2 bottom-4 z-10 px-3 py-1 text-sm bg-[#FFFFFF] text-[#5534DA] rounded-md w-[83px] h-[32px] border border-[#D9D9D9]"
+              type="submit"
+              disabled={!isValid}
+              className={`absolute right-2 bottom-4 z-10 px-3 py-1 text-sm bg-[#FFFFFF] text-[#5534DA] rounded-md w-[83px] h-[32px] border border-[#D9D9D9] ${
+                isValid ? "cursor-pointer" : "text-[#D9D9D9] cursor-not-allowed"
+              }`}
             >
               입력
             </button>
           </form>
         </div>
       </section>
+      {/* 목록/상태 */}
+      <div className="mt-3 space-y-3">
+        {isLoadingComments && (
+          <div className="animate-pulse space-y-2">
+            <div className="h-5 bg-gray-100 rounded" />
+            <div className="h-5 bg-gray-100 rounded w-4/5" />
+          </div>
+        )}
+
+        {commentsError && (
+          <p className="text-sm text-red-600">{commentsError}</p>
+        )}
+
+        {!isLoadingComments && !commentsError && comments.length === 0 && (
+          <p className="text-sm text-gray-500">첫 댓글을 남겨보세요.</p>
+        )}
+
+        {comments.map((c) => {
+          const isEditing = editingId === c.id;
+          const isBusy = actionLoadingId === c.id;
+          const hasError = actionErrorId === c.id;
+
+          return (
+            <div key={c.id} className="flex items-start gap-3">
+              {/* 아바타 */}
+              {c.author?.profileImageUrl ? (
+                <Image
+                  src={c.author.profileImageUrl}
+                  alt={c.author.nickname ?? "작성자"}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              ) : (
+                <InitialAvatar label={c.author?.nickname ?? ""} />
+              )}
+
+              <div className="flex-1">
+                {/* 작성자/시간 */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-[#333236]">
+                    {c.author?.nickname ?? "익명"}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(c.createdAt).toLocaleString("ko-KR", {
+                      timeZone: "Asia/Seoul",
+                    })}
+                  </span>
+                </div>
+
+                {/* 본문 or 편집 폼 */}
+                {!isEditing ? (
+                  <p className="mt-1 text-sm text-[#333236] leading-5 whitespace-pre-wrap">
+                    {c.content}
+                  </p>
+                ) : (
+                  <div className="mt-1">
+                    <textarea
+                      value={editText}
+                      onChange={(e) => setEditText(e.currentTarget.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                          e.preventDefault();
+                          handleCancelEdit();
+                        }
+                        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                          e.preventDefault();
+                          handleSaveEdit(c.id);
+                        }
+                      }}
+                      className="w-full h-[88px] p-2 rounded-md border border-[#D9D9D9]"
+                      autoFocus
+                    />
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSaveEdit(c.id)}
+                        disabled={isBusy || editText.trim().length === 0}
+                        className={`px-3 py-1 text-sm rounded-md border border-[#D9D9D9]
+                  ${
+                    isBusy || editText.trim().length === 0
+                      ? "opacity-60 cursor-not-allowed"
+                      : "hover:bg-[#F7F7F7]"
+                  }`}
+                      >
+                        {isBusy ? "저장 중…" : "저장"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        disabled={isBusy}
+                        className="px-3 py-1 text-sm underline disabled:opacity-60"
+                      >
+                        취소
+                      </button>
+                    </div>
+                    {hasError && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {actionErrorMsg}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* 액션 버튼들 */}
+                {!isEditing && (
+                  <div className="mt-2 flex gap-2 text-[12px] font-normal text-[#9FA6B2]">
+                    <button
+                      type="button"
+                      className="underline disabled:opacity-60"
+                      onClick={() => handleStartEdit(c)}
+                      disabled={isBusy}
+                    >
+                      수정
+                    </button>
+                    <button
+                      type="button"
+                      className="underline disabled:opacity-60"
+                      onClick={() => handleDelete(c.id)}
+                      disabled={isBusy}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
+
+                {/* 에러 (편집 모드가 아닐 때) */}
+                {!isEditing && hasError && (
+                  <p className="mt-1 text-sm text-red-600">{actionErrorMsg}</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 더 보기 */}
+      {nextCursor != null && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={handleLoadMore}
+            disabled={isLoadingMore}
+            className={`px-3 py-2 text-sm rounded-md border border-[#D9D9D9]
+        ${
+          isLoadingMore ? "cursor-not-allowed opacity-60" : "hover:bg-[#F7F7F7]"
+        }`}
+          >
+            {isLoadingMore ? "불러오는 중…" : "더 보기"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
