@@ -43,7 +43,7 @@ export default function NewColumnModal({
   return (
     <>
       <Modal
-        open={open}
+        open={true}
         onClose={onClose}
         contentClassName="bg-[#FFFFFF] p-6 rounded-[8px] min-w-[480px]"
       >

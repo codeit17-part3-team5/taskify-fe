@@ -15,7 +15,7 @@ export default function DashBoardDetail() {
   const token = useTokenStore((state) => state.accessToken);
   const [isOpen, setIsOpen] = useState(false);
   const [columns, setColumns] = useState<Column[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const dashboardId = 16239;
 
@@ -58,7 +58,7 @@ export default function DashBoardDetail() {
 
             {isOpen && (
               <NewColumnModal
-                open={isModalOpen}
+                open={true}
                 onClose={() => setIsOpen(false)}
                 onCreate={(title) => handleCreateColumn(title, dashboardId)} // 대쉬보드id 동적으로 가져오기
                 overlapTitles={columns.map((col) => col.title)}

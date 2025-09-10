@@ -170,6 +170,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
         <div>
           <div>
             <EditColumnModal
+              open={true}
               onClose={() => setManageModalOpen(false)}
               onDelete={handleCardsDelete}
               initialTitle={columnTitle}
