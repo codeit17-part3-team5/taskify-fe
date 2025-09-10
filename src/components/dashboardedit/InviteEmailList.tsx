@@ -120,10 +120,10 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
   };
 
   return (
-    <div className="py-8 rounded-[16px] bg-white flex flex-col">
-      <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
+    <div className="tablet:py-8 py-5 rounded-[16px] bg-white flex flex-col">
+      <div className="tablet:px-[28px] px-2.5 flex justify-between items-center tablet:text-[24px] text-5 font-bold">
         초대 내역
-        <div className="flex gap-4 items-center text-[14px] font-normal">
+        <div className="flex gap-4 items-center tablet:text-[14px] text-[12px] font-normal">
           <Pagination
             total={totalCount}
             page={page}
@@ -131,7 +131,7 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
             pageSize={size}
           />
           <button
-            className="w-[105px] h-8 bg-[#5534DA] text-white text-[14px] rounded-[4px] flex items-center justify-center gap-2"
+            className="hidden tablet w-[105px] h-8 bg-[#5534DA] text-white text-[14px] rounded-[4px] tablet:flex items-center justify-center gap-2"
             onClick={handleInvite}
           >
             <Image
@@ -144,8 +144,15 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
           </button>
         </div>
       </div>
-      <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
+      <div className="flex justify-between px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
         이메일
+        <button
+          className="w-[105px] h-8 bg-[#5534DA] text-white text-[14px] rounded-[4px] flex items-center justify-center gap-2 tablet:hidden"
+          onClick={handleInvite}
+        >
+          <Image src={Plusinviteing} alt="플러스 버튼" width={14} height={14} />
+          초대하기
+        </button>
       </div>
       <ul className="divide-y divide-[#EEEEEE]">
         {invitations.map((inv) => (
@@ -159,7 +166,7 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
               </div>
             </div>
             <button
-              className="w-[84px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium"
+              className="tablet:w-[84px] w-[52px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium"
               onClick={() => handleCancel(inv.id)}
             >
               취소

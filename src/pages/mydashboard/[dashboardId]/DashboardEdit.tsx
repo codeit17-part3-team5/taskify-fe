@@ -54,14 +54,14 @@ export default function DashboardEdit({ dashboardId }: DashboardEditProps) {
         </aside>
         <main className="flex-1 bg-[#FAFAFA] px-5 py-5">
           <BackButton />
-          <div className="w-[620px] flex flex-col gap-6">
+          <div className="desktop:w-[620px] tablet:w-[504px] w-[284px] flex flex-col gap-6">
             <div className="w-full flex flex-col gap-4">
               <DashboardEditSection dashboardId={dashboardId} />
               <MemberEdit dashboardId={dashboardId} />
               <InviteEmailList dashboardId={dashboardId} />
             </div>
             <button
-              className="text-center rounded-[8px] bg-[#FAFAFA] text-[18px] font-medium w-[320px] h-[62px] border border-[#D9D9D9]"
+              className="text-center rounded-[8px] bg-[#FAFAFA] text-[18px] font-medium tablet:w-[320px] w-[284px] h-[62px] border border-[#D9D9D9]"
               onClick={handleDelete}
             >
               대시보드 삭제하기

@@ -92,10 +92,10 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
   };
 
   return (
-    <div className="py-8 rounded-[16px] bg-white flex flex-col">
-      <div className="px-[28px] flex justify-between items-center text-[24px] font-bold">
+    <div className="tablet:py-8 rounded-[16px] bg-white flex flex-col py-5">
+      <div className="tablet:px-[28px] px-2.5 flex justify-between items-center tablet:text-[24px] text-5 font-bold">
         구성원
-        <div className="flex gap-4 items-center text-[14px] font-normal">
+        <div className="flex gap-4 items-center tablet:text-[14px] text-3 font-normal">
           <Pagination
             total={totalCount}
             page={page}
@@ -104,14 +104,14 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
           />
         </div>
       </div>
-      <div className="px-[28px] text-[16px] font-normal text-[#9FA6B2] mt-6">
+      <div className="tablet:px-[28px] px-2.5 tablet:text-[16px] text-[14px] font-normal text-[#9FA6B2] mt-6">
         이름
       </div>
       <ul className="divide-y divide-[#EEEEEE]">
         {members.map((m) => (
           <li
             key={m.id}
-            className="flex items-center justify-between px-[28px] py-5"
+            className="flex items-center justify-between tablet:px-[28px] px-2.5 tablet:text-[16px] text-[14px] py-5"
           >
             <div className="flex items-center gap-3">
               <div
@@ -126,7 +126,7 @@ export default function MemberEdit({ dashboardId }: MemberEditProps) {
               </div>
             </div>
             <button
-              className="w-[84px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium"
+              className="tablet:w-[84px] w-[54px] h-8 text-center rounded-[4px] bg-white border-[#D9D9D9] border text-[14px] text-[#5534DA] font-medium"
               onClick={() => handleRemove(m.id)}
             >
               삭제
