@@ -22,7 +22,7 @@ export default function CreateDashboard({
     setSubmitting(true);
     try {
       await onCreate({ title: title, color });
-      emitDashboardsInvalidated(); // 생성 시 대시보드 목록 다시 불러오기
+      emitDashboardsInvalidated();
     } finally {
       setSubmitting(false);
     }

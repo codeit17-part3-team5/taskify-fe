@@ -145,8 +145,8 @@ export default function InvitedDashboardList({
   };
 
   return (
-    <div className="w-[1020px] py-8 bg-white flex gap-6 rounded-[8px] mt-15 flex-col">
-      <div className="w-[966px] mx-auto flex flex-col gap-8 font-bold text-[24px]">
+    <div className="desktop:w-[1020px] py-8 tablet:w-[504px] tablet:py-4 w-[260px] bg-white flex gap-6 rounded-[8px] mt-15 flex-col">
+      <div className="desktop:w-[966px] tablet:w-[448px] tablet:gap-[17px] tablet:mx-auto flex flex-col gap-8 font-bold text-[24px] px-5">
         초대받은 대시보드
         <div className="flex gap-2 w-full h-10 px-4 py-2.5 border border-[#D9D9D9] rounded-[6px]">
           <Image
@@ -164,43 +164,51 @@ export default function InvitedDashboardList({
           />
         </div>
       </div>
-      <div className="w-full font-normal text-4">
-        <div>
-          <div className="pl-[76px] pr-8 grid grid-cols-3 text-[#9FA6B2] w-[820px]">
-            <div className="col-span-1">이름</div>
-            <div className="col-span-1">초대자</div>
-            <div className="col-span-1 flex justify-center">수락 여부</div>
-          </div>
-          <div className="divide-y divide-[#F1F5F9] w-full">
-            {invitations.map((row) => (
-              <div key={row.id} className="w-full">
-                <div className="pl-[76px] pr-8 grid grid-cols-3 items-center py-5 w-[820px]">
-                  <div>{row.dashboard.title}</div>
-                  <div>{row.inviter.nickname}</div>
-                  <div className="flex gap-2.5 justify-center">
-                    <button
-                      className="px-[29px] py-[7px] rounded-[4px] bg-[#5534DA] text-white text-[14px] font-medium"
-                      onClick={() => handleAccept(row)}
-                    >
-                      수락
-                    </button>
-                    <button
-                      className="px-[29px] py-[7px] rounded-[4px] border border-[#D9D9D9] text-[14px] text-[#5534DA] font-medium font-pretendard"
-                      onClick={() => handleReject(row.id)}
-                    >
-                      거절
-                    </button>
-                  </div>
+      <div className="w-full font-normal text-4 tablet:px-0 px-5">
+        <div className="hidden desktop:pl-[76px] desktop:pr-8 tablet:pl-7 tablet:pr-[104px] tablet:grid tablet:grid-cols-[1fr_1fr_auto] text-[#9FA6B2] desktop:w-[820px] grid-cols-1">
+          <div>이름</div>
+          <div>초대자</div>
+          <div className="flex justify-center w-[178px] mx-auto">수락 여부</div>
+        </div>
+        <div className="divide-y divide-[#F1F5F9] w-full">
+          {invitations.map((row) => (
+            <div key={row.id} className="w-full">
+              <div className="desktop:pl-[76px] desktop:pr-8 tablet:pl-7 tablet:pr-[104px] grid tablet:grid-cols-[1fr_1fr_auto] items-center tablet:justify-between py-5 desktop:w-[820px] tablet:w-full grid-cols-1 gap-[3px] w-[226px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#9FA6B2] tablet:hidden mr-2">
+                    이름
+                  </span>
+                  <span>{row.dashboard.title}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#9FA6B2] tablet:hidden mr-2">
+                    초대자
+                  </span>
+                  <span>{row.inviter.nickname}</span>
+                </div>
+                <div className="flex gap-2.5 tablet:justify-center desktop:w-[178px] tablet:w-[154px] w-full">
+                  <button
+                    className="text-center rounded-[4px] bg-[#5534DA] text-white text-[14px] font-medium desktop:px-[23px] desktop:py-1.5 tablet:px-[23px] tablet:py-1.5 w-[109px] px-[37px] py-[7px]"
+                    onClick={() => handleAccept(row)}
+                  >
+                    수락
+                  </button>
+                  <button
+                    className="text-center rounded-[4px] border border-[#D9D9D9] text-[14px] text-[#5534DA] font-medium desktop:px-7 desktop:py-[7px] tablet:px-[23px] tablet:py-1.5 w-[109px] px-[37px] py-[7px]"
+                    onClick={() => handleReject(row.id)}
+                  >
+                    거절
+                  </button>
                 </div>
               </div>
-            ))}
-            <div ref={sentinelRef} />
-            {invitations.length === 0 && !loading && (
-              <div className="py-10 text-center text-[#9FA6B2]">
-                검색 결과가 없습니다
-              </div>
-            )}
-          </div>
+            </div>
+          ))}
+          <div ref={sentinelRef} />
+          {invitations.length === 0 && !loading && (
+            <div className="py-10 text-center text-[#9FA6B2]">
+              검색 결과가 없습니다
+            </div>
+          )}
         </div>
       </div>
     </div>
