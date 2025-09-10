@@ -18,7 +18,7 @@ function InitialAvatar({ label }: { label: string }) {
   );
 }
 
-export default function ReadTodoCard({ cardId = 14131 }: ReadTodoCardProps) {
+export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
   const current = useTaskStore((s) => s.current);
   const isLoadingCurrent = useTaskStore((s) => s.isLoadingCurrent);
   const currentError = useTaskStore((s) => s.currentError);
@@ -114,12 +114,6 @@ export default function ReadTodoCard({ cardId = 14131 }: ReadTodoCardProps) {
                 <div className="text-[12px] text-[#000000] font-semibold leading-[20px]">
                   담당자
                 </div>
-                {/* <div className="flex">
-                  <div className="flex items-center gap-2">
-                    <div>프로필 사진 /</div>
-                    <div>유저네임</div>
-                  </div>
-                </div> */}
                 <div className="flex mt-[6px]">
                   <div className="flex items-center gap-2">
                     {current.assignee?.profileImageUrl ? (
@@ -139,7 +133,6 @@ export default function ReadTodoCard({ cardId = 14131 }: ReadTodoCardProps) {
                   </div>
                 </div>
               </div>
-              {/* 마감일 */}
               <div>
                 <div className="text-[12px] text-[#000000] font-semibold leading-[20px]">
                   마감일
@@ -164,9 +157,23 @@ export default function ReadTodoCard({ cardId = 14131 }: ReadTodoCardProps) {
         <div className="max-w-[295px] md:max-w-[349px] lg:max-w-[470px] mt-[16px] text-[#000000] text-[14px] leading-[24px]">
           {current.description}
         </div>
-        <div className="max-w-[290px] md:max-w-[420px] lg:max-w-[445px] mt-[8px]">
-          {current.imageUrl}
-        </div>
+        {current.imageUrl ? (
+          <div className="relative mt-[8px] w-full max-w-[445px] h-[260px] overflow-hidden rounded-lg">
+            <Image
+              src={current.imageUrl.trim()}
+              alt="첨부 이미지"
+              fill
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, 445px"
+              onError={(e) => {
+                (e.target as any).style.display = "none";
+              }}
+            />
+            <noscript>
+              <a href={current.imageUrl}>이미지 열기</a>
+            </noscript>
+          </div>
+        ) : null}
       </article>
       <section className="w-[295px] lg:w-[450px] mt-[16px]">
         <div className="text-[16px] text-[#333236] leading-[26px] font-medium">
