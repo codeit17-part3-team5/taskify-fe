@@ -22,18 +22,18 @@ export default function CreateDashboard({
     setSubmitting(true);
     try {
       await onCreate({ title: title, color });
-      emitDashboardsInvalidated(); // 생성 시 대시보드 목록 다시 불러오기
+      emitDashboardsInvalidated();
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="px-8 py-8 rounded-[16px] bg-white flex flex-col gap-10">
-      <div className="flex flex-col gap-6 text-[24px] font-bold">
+    <div className="tablet:px-8 tablet:py-8 px-4 py-5 rounded-[16px] bg-white flex flex-col gap-10 w-[327px] tablet:w-auto">
+      <div className="flex flex-col gap-6 tablet:text-[24px] text-[20px] font-bold">
         새로운 대시보드
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 text-[18px] font-medium">
+          <div className="flex flex-col gap-2 tablet:text-[18px] text-[16px] font-medium">
             대시보드 이름
             <input
               type="text"

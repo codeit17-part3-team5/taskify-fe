@@ -124,8 +124,8 @@ export default function MydashBoard() {
           </header>
 
           <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
-            <div className="flex flex-col w-[1022px] gap-3">
-              <div className="grid grid-cols-3 gap-[13px] w-full">
+            <div className="flex flex-col desktop:w-[1022px] desktop:gap-3 tablet:w-[502px] tablet:gap-4 w-[260px]">
+              <div className="grid desktop:grid-cols-3 desktop:gap-[13px] tablet:grid-cols-2 tablet:gap-[10px] grid-cols-1 gap-2 w-full">
                 <NewDashboard setOpen={setOpen} />
                 <DashboardList items={dashboards} />
               </div>
