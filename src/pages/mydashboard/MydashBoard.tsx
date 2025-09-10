@@ -119,18 +119,13 @@ export default function MydashBoard() {
           <Sidebar />
         </aside>
         <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
-          <div className="flex flex-col w-[1022px] gap-3">
+          <div className="flex flex-col desktop:w-[1022px] tablet:w-[504px] w-[260px] gap-3">
             <div className="grid grid-cols-3 gap-[13px] w-full">
               <NewDashboard setOpen={setOpen} />
               <DashboardList items={dashboards} />
             </div>
             <div className="flex justify-end gap-4 text-[14px]">
-              <Pagination
-                total={total}
-                page={page}
-                onChange={setPage}
-                pageSize={PAGE_SIZE}
-              />
+              <Pagination total={total} page={page} onChange={setPage} />
             </div>
             <InvitedDashboardList
               query={query}

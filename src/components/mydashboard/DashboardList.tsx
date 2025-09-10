@@ -16,7 +16,7 @@ export default function DashboardList({ items }: DashboardListProps) {
         <Link
           href={`/mydashboard/${card.id}/edit`}
           key={card.id}
-          className="w-[332px] h-[70px] flex gap-3 items-center justify-between px-5 py-[22px] bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
+          className="w-[332px] flex gap-3 items-center justify-between px-5 py-[22px] bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold"
         >
           <div className="flex items-center gap-4">
             <span
