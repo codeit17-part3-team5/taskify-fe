@@ -156,7 +156,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
             <CreateTodoCard
               onClose={() => setCardModalOpen(false)}
               onCreate={handleCreateCard}
-              assigneeUserId={0} // 0 가능? 테스트
+              // assigneeUserId={0} // 0 가능? 테스트
               dashboardId={column.dashboardId}
               columnId={column.id}
               members={members}

@@ -16,7 +16,7 @@ type CreateTodoCardProps = {
     tag: string;
   }) => void;
 
-  assigneeUserId: number;
+  // assigneeUserId: number;
   dashboardId: number;
   columnId: number;
   members: Member[];
@@ -25,7 +25,7 @@ type CreateTodoCardProps = {
 export default function CreateTodoCard({
   onClose,
   onCreate,
-  assigneeUserId,
+  // assigneeUserId,
   dashboardId,
   columnId,
   members,
@@ -45,9 +45,13 @@ export default function CreateTodoCard({
     e.preventDefault();
     if (!isValid || isCreating) return;
 
+    // member 배열에서 id === Number(name)인 멤버를 찾음 -> 있다면 userId를 꺼내서 assigneeUserId에 넣음
+    const selectMember = members.find((member) => member.id === Number(name));
+    const assigneeUserId = selectMember?.userId ?? 0;
+
     try {
       await createTask({
-        assigneeUserId: parseInt(name, 10), // select로 받은 userId
+        assigneeUserId, // select로 받은 userId
         dashboardId,
         columnId,
         title: title.trim(),
@@ -87,7 +91,7 @@ export default function CreateTodoCard({
               >
                 <option value="">담당자 선택</option>
                 {members.map((member) => (
-                  <option key={member.id} value={member.userId}>
+                  <option key={member.id} value={member.id}>
                     {member.nickname}
                   </option>
                 ))}
