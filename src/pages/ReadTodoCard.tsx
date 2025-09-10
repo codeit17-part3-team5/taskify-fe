@@ -165,9 +165,6 @@ export default function ReadTodoCard({ cardId }: ReadTodoCardProps) {
               fill
               className="object-cover rounded-lg"
               sizes="(max-width: 768px) 100vw, 445px"
-              onError={(e) => {
-                (e.target as any).style.display = "none";
-              }}
             />
             <noscript>
               <a href={current.imageUrl}>이미지 열기</a>
