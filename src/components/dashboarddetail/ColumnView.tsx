@@ -2,6 +2,7 @@ import React, { Children, useEffect, useState } from "react";
 import axios from "axios";
 import CreateTodoCard from "@/pages/CreateTodoCard";
 import EditColumnModal from "./EditColumnModal";
+import CardModal from "./CardModal";
 import instance from "@/lib/axios";
 
 type Column = {
@@ -171,10 +172,10 @@ export default function ColumnView({
       {cardModalOpen && (
         <div className="">
           <div>
-            <CreateTodoCard
+            <CardModal
+              open={cardModalOpen}
               onClose={() => setCardModalOpen(false)}
               onCreate={handleCreateCard}
-              // assigneeUserId={0} // 0 가능? 테스트
               dashboardId={column.dashboardId}
               columnId={column.id}
               members={members}
