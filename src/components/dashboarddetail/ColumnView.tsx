@@ -12,6 +12,7 @@ type Column = {
 
 type ColumnViewProps = {
   column: Column;
+  onDeleteColumn: (id: number) => void;
 };
 
 type Card = {
@@ -33,7 +34,10 @@ export type Member = {
   userId: number;
 };
 
-export default function ColumnView({ column }: ColumnViewProps) {
+export default function ColumnView({
+  column,
+  onDeleteColumn,
+}: ColumnViewProps) {
   const [cardModalOpen, setCardModalOpen] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
@@ -54,9 +58,15 @@ export default function ColumnView({ column }: ColumnViewProps) {
     }
   };
 
-  //컬럼 삭제 핸들러
-  const hanldeDeleteColumn = async () => {
-    const response = await instance.delete(`/columns/${column.id}`);
+  // 컬럼 삭제
+  const handleDeleteColumn = async () => {
+    try {
+      await instance.delete(`/columns/${column.id}`);
+      alert("컬럼이 삭제되었습니다.");
+      onDeleteColumn(column.id);
+    } catch (error) {
+      console.log("컬럼 삭제 실패");
+    }
   };
 
   //카드 생성
@@ -180,7 +190,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
             <EditColumnModal
               open={true}
               onClose={() => setManageModalOpen(false)}
-              onDelete={handleCardsDelete}
+              onDelete={handleDeleteColumn}
               initialTitle={columnTitle}
               onUpdate={handleColumnTitleUpdate}
             />

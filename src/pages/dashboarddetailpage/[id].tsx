@@ -30,6 +30,10 @@ export default function DashBoardDetail() {
     return 0;
   }, [id]);
 
+  const handleDeleteColumn = (id: number) => {
+    setColumns((prev) => prev.filter((col) => col.id !== id));
+  };
+
   const handleCreateColumn = async (title: string, dashboardId: number) => {
     if (columns.length >= 10) {
       alert("컬럼은 최대 10개까지 생성할 수 있습니다.");
@@ -64,7 +68,7 @@ export default function DashBoardDetail() {
           {/* 컨텐츠 영역 */}
           <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
             {/* To do */}
-            <ColumnList columns={columns} />
+            <ColumnList columns={columns} onDeleteColumn={handleDeleteColumn} />
 
             {/* 칼럼 추가하기 */}
             <CreativeColumn onClick={() => setIsOpen(true)} />
