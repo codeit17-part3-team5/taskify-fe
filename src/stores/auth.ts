@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useTokenStore } from "./token";
 import axios from "../lib/axios";
+import { isAxiosError, AxiosError } from "axios";
 
 type User = {
   id: number;
@@ -52,7 +53,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       login: async ({ email, password }) => {
-        console.log(email, password);
         try {
           const { data } = await axios.post<LoginResponse>("/auth/login", {
             email,
@@ -73,9 +73,26 @@ export const useAuthStore = create<AuthState>()(
             useTokenStore.getState().accessToken?.slice(0, 10)
           );
           set({ user: data.user, isAuthenticated: true });
-        } catch (err) {
-          console.error("로그인 실패: ", err);
-          throw err;
+        } catch (err: unknown) {
+          if (isAxiosError<{ message?: string }>(err)) {
+            const s = err.response?.status;
+            const msg = err.response?.data?.message;
+
+            throw new Error(
+              msg ??
+                (s === 400
+                  ? "요청 형식이 올바르지 않습니다."
+                  : s === 401
+                  ? "이메일 또는 비밀번호가 올바르지 않습니다."
+                  : s && s >= 500
+                  ? "서버 오류입니다. 잠시 후 다시 시도해 주세요."
+                  : !err.response
+                  ? "네트워크 오류입니다. 인터넷 연결을 확인해 주세요."
+                  : "로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.")
+            );
+          }
+          if (err instanceof Error) throw err;
+          throw new Error("알 수 없는 로그인 오류가 발생했습니다.");
         }
       },
 
