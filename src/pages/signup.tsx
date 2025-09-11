@@ -29,10 +29,13 @@ export default function SignUp() {
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmTouched, setConfirmTouched] = useState(false);
   const [nicknameTouched, setNicknameTouched] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const signup = useAuthStore((state) => state.signup);
   const router = useRouter();
 
-  // --- validation flags ---
   const emailValid = email !== "" && isValidEmail(email);
   const passwordValid = password !== "" && isValidPassword(password);
   const confirmEmpty = confirmPassword.trim() === "";
@@ -42,7 +45,6 @@ export default function SignUp() {
   const formValid =
     emailValid && passwordValid && confirmValid && nicknameValid && agreed;
 
-  // --- error visibility (on blur or after submit) ---
   const showEmailError =
     (submitAttempted || emailTouched) && email !== "" && !emailValid;
   const showPasswordError =
@@ -70,8 +72,15 @@ export default function SignUp() {
     e.preventDefault();
     setSubmitAttempted(true);
 
-    await signup({ email, password, nickname });
-    router.push("/login");
+    try {
+      setIsSubmitting(true);
+      await signup({ email, password, nickname });
+      setShowSuccess(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -112,6 +121,38 @@ export default function SignUp() {
         </div>
       </form>
       <ToLoginPrompt />
+
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setShowSuccess(false)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signup-success-title"
+            aria-describedby="signup-success-desc"
+            className="relative z-10 w-[368px] h-[192px] rounded-2xl bg-white shadow-xl"
+          >
+            <div
+              id="signup-success-title"
+              className="mt-[40px] text-[20px] font-medium text-[#333236] text-center leading-[32px]"
+            >
+              가입이 완료되었습니다!
+            </div>
+            <div className="mt-[32px] flex justify-center">
+              <button
+                type="button"
+                onClick={() => router.push("/login")}
+                className="w-[240px] h-[48px] rounded-xl bg-[#5534DA] text-white text-[16px] leading-[26px] cursor-pointer hover:opacity-90"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
