@@ -5,7 +5,7 @@ import ManageDashboard from "@/components/sidebar/ManageDashboard";
 
 export default function Navbar() {
   return (
-    <div className="flex justify-between h-[70px] border-[#D9D9D9] border-b-[1px]">
+    <div className="flex justify-between h-[70px] border-[#D9D9D9] border-b-[1px] bg-[#FFFFFF]">
       <ToMyDashboardButton />
       <div className="flex items-center">
         <ManageDashboard />
