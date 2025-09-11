@@ -44,11 +44,6 @@ export default function InvitedDashboardList({
       setCursorId(res.cursorId ?? undefined);
       setHasMore(!!res.cursorId);
     } catch (e: unknown) {
-      // const msg =
-      //   (e as AxiosError)?.response?.data?.message ??
-      //   (e as Error)?.message ??
-      //   "초대 목록을 불러오지 못했습니다.";
-      // console.error("[InvitedDashboardList] first load:", msg);
     } finally {
       setLoading(false);
     }
@@ -67,11 +62,6 @@ export default function InvitedDashboardList({
       setCursorId(res.cursorId ?? undefined);
       setHasMore(!!res.cursorId);
     } catch (e: unknown) {
-      // const msg =
-      //   (e as AxiosError)?.response?.data?.message ??
-      //   (e as Error)?.message ??
-      //   "초대 목록을 더 불러오지 못했습니다.";
-      // console.error("[InvitedDashboardList] loadMore:", msg);
     } finally {
       setLoading(false);
     }

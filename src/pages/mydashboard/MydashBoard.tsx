@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { listDashboard, createDashboard } from "@/lib/dashboard";
 import { useTokenStore } from "@/stores/token";
 import Sidebar from "@/components/sidebar/Sidebar";
+import Navbar from "../navbar";
 import NewDashboard from "@/components/mydashboard/NewDashboard";
 import Modal from "../../components/Modal";
 import InvitedDashboardList from "@/components/mydashboard/InvitedDashboardList";
@@ -92,8 +93,6 @@ export default function MydashBoard() {
     [page, fetchDashboards]
   );
 
-  // const pageStart = (page - 1) * PAGE_SIZE;
-  // const pageCards = dashboards.slice(pageStart, pageStart + PAGE_SIZE);
   const handleCreate = async ({
     title,
     color,
@@ -119,9 +118,7 @@ export default function MydashBoard() {
         </aside>
 
         <div className="flex-1">
-          <header className="h-[70px] bg-white flex items-center px-6 shadow-sm">
-            내 대시보드
-          </header>
+          <Navbar />
 
           <main className="flex-1 bg-[#FAFAFA] px-5 py-7">
             <div className="flex flex-col desktop:w-[1022px] desktop:gap-3 tablet:w-[502px] tablet:gap-4 w-[260px]">

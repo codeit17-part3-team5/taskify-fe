@@ -12,7 +12,7 @@ export default function Pagination({
   pageSize = 5,
 }: Props) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const pageChage = (p: number) =>
+  const pageChange = (p: number) =>
     onChange(Math.min(Math.max(1, p), totalPages));
 
   return (
@@ -26,7 +26,7 @@ export default function Pagination({
 
       <button
         type="button"
-        onClick={() => pageChage(page - 1)}
+        onClick={() => pageChange(page - 1)}
         disabled={page <= 1}
         className="px-3 py-1 rounded-md border border-[#D9D9D9] disabled:opacity-40"
         aria-label="이전 페이지"
@@ -35,7 +35,7 @@ export default function Pagination({
       </button>
       <button
         type="button"
-        onClick={() => pageChage(page + 1)}
+        onClick={() => pageChange(page + 1)}
         disabled={page >= totalPages}
         className="px-3 py-1 rounded-md border border-[#D9D9D9] disabled:opacity-40"
         aria-label="다음 페이지"
