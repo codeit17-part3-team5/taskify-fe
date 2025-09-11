@@ -5,9 +5,9 @@ import Button from "@/components/shared/Button";
 import { useEffect, useState } from "react";
 import { useTokenStore } from "@/stores/token";
 import { getMe, updateMe } from "@/lib/user";
-import ProfileImageUploader from "./ProfileImageUploader";
-import Navbar from "../navbar";
-import Sidebar from "../sidebar";
+import ProfileImageUploader from "./mypage/ProfileImageUploader";
+import Sidebar from "./sidebar";
+import Navbar from "./navbar";
 
 export default function MyPage() {
   const [email, setEmail] = useState(""); // 이메일 표시용
@@ -87,7 +87,7 @@ export default function MyPage() {
 
       <div className="flex-1 flex flex-col">
         {/* 상단 내브바: 제목 가운데 */}
-        <Navbar />
+        <Navbar title="계정관리" />
 
         <main className="flex-1 overflow-y-auto">
           <div className="mt-[20px] ml-[20px]">
