@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArrowRightimg from "@/assets/images/arrowrightimg.png";
-import { COLOR_DOTS, isColorKey } from "@/constants/dashboard";
 import type { Dashboard } from "@/lib/types";
 
 type DashboardListProps = {
@@ -14,7 +13,7 @@ export default function DashboardList({ items }: DashboardListProps) {
     <>
       {items.slice(0, 6).map((card) => (
         <Link
-          href={`/mydashboard/${card.id}/edit`}
+          href={`/dashboarddetailpage/${card.id}`}
           key={card.id}
           className="flex gap-3 items-center justify-between px-5 py-[22px] bg-[#ffffff] border border-[#D9D9D9] rounded-[8px] font-semibold desktop:w-[332px] tablet:w-[247px] w-full"
         >

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import instance from "@/lib/axios";
 import CreativeColumn from "@/components/dashboarddetail/CreativeColumn";
 import NewColumnModal from "@/components/dashboarddetail/NewColumnModal";
@@ -14,6 +15,9 @@ type Column = {
 };
 
 export default function DashBoardDetail() {
+  const router = useRouter();
+  const { id } = router.query;
+
   const token = useTokenStore((state) => state.accessToken);
   const [isOpen, setIsOpen] = useState(false);
   const [columns, setColumns] = useState<Column[]>([]);
