@@ -6,21 +6,25 @@ type EmailInputProps = {
   placeholder: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 };
 
 export default function EmailInput({
   placeholder,
   value,
   onChange,
+  onBlur,
+  inputProps,
 }: EmailInputProps) {
-  // 이메일 유효성 검사
-
   return (
     <div>
       <AccountInput
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        inputProps={inputProps}
       />
     </div>
   );

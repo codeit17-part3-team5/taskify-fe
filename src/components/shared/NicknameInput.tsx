@@ -5,6 +5,7 @@ type NicknameInputProps = {
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
 };
 
 export default function NicknameInput({
