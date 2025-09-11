@@ -5,9 +5,9 @@ import Button from "@/components/shared/Button";
 import { useEffect, useState } from "react";
 import { useTokenStore } from "@/stores/token";
 import { getMe, updateMe } from "@/lib/user";
-import ProfileImageUploader from "./ProfileImageUploader";
-import Navbar from "../navbar";
-import Sidebar from "../sidebar";
+import ProfileImageUploader from "./mypage/ProfileImageUploader";
+import Sidebar from "./sidebar";
+import Navbar from "./navbar";
 
 export default function MyPage() {
   const [email, setEmail] = useState(""); // 이메일 표시용
