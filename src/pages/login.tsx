@@ -55,7 +55,7 @@ export default function Login() {
     }
 
     await login({ email, password });
-    router.push("/mydashboard/Mydashboard");
+    router.push("/mydashboard/MydashBoard");
   }
 
   return (
