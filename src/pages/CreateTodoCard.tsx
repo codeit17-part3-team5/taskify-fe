@@ -18,7 +18,6 @@ type CreateTodoCardProps = {
     imageUrl?: string | null;
   }) => void;
 
-  // assigneeUserId: number;
   dashboardId: number;
   columnId: number;
   members: Member[];
@@ -27,12 +26,11 @@ type CreateTodoCardProps = {
 export default function CreateTodoCard({
   onClose,
   onCreate,
-  // assigneeUserId,
   dashboardId,
   columnId,
-  members = [], // 테스트용 빈 배열
+  members = [],
 }: CreateTodoCardProps) {
-  const [name, setName] = useState(""); // assigneeUserId
+  const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [date, setDate] = useState("");
@@ -45,8 +43,7 @@ export default function CreateTodoCard({
 
   const isValid = title !== "" && desc !== "";
 
-  const { createTask, isCreating, createError, resetCreateState } =
-    useTaskStore();
+  const { createTask, isCreating } = useTaskStore();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,11 +66,9 @@ export default function CreateTodoCard({
         formData,
         {}
       );
-
       const data = res.data ?? {};
       const url: string | undefined =
         data.imageUrl ?? data.url ?? data.location;
-
       if (!url) throw new Error("서버 응답에서 이미지 URL을 찾을 수 없습니다.");
 
       setUploadedImageUrl(url);
@@ -97,13 +92,12 @@ export default function CreateTodoCard({
     e.preventDefault();
     if (!isValid || isCreating) return;
 
-    // member 배열에서 id === Number(name)인 멤버를 찾음 -> 있다면 userId를 꺼내서 assigneeUserId에 넣음
     const selectMember = members.find((member) => member.id === Number(name));
     const assigneeUserId = selectMember?.userId ?? 0;
 
     try {
       await createTask({
-        assigneeUserId, // select로 받은 userId
+        assigneeUserId,
         dashboardId,
         columnId,
         title: title.trim(),
@@ -118,18 +112,6 @@ export default function CreateTodoCard({
         imageUrl: uploadedImageUrl ?? undefined,
       });
 
-      // if (!payload.title) throw new Error("제목은 필수입니다.");
-      // if (!payload.description) throw new Error("설명은 필수입니다.");
-      // if (
-      //   [payload.assigneeUserId, payload.dashboardId, payload.columnId].some(
-      //     (v) => !Number.isFinite(v)
-      //   )
-      // ) {
-      //   throw new Error("숫자 필드를 확인해 주세요.");
-      // }
-
-      // await createTask(payload);
-
       onCreate?.({ name, title, desc, date, tag, imageUrl: uploadedImageUrl });
       onClose();
     } catch (err) {
@@ -138,21 +120,23 @@ export default function CreateTodoCard({
   };
 
   return (
-    <div className="flex flex-col justify-evenly w-[327px] lg:w-[584px] h-[766px] lg:h-[966px] mx-auto">
-      <div className="w-[327px] lg:w-[520px] lg:h-[816px] mx-auto">
+    <div className="flex flex-col justify-evenly w-[327px] desktop:w-[584px] h-[766px] desktop:h-[966px] mx-auto">
+      <div className="w-[327px] desktop:w-[520px] desktop:h-[816px] mx-auto">
         <header>
           <h1 className="text-[#333236] font-bold text-[24px] leading-[32px]">
             할 일 생성
           </h1>
         </header>
-        <main className="flex flex-col justify-between lg:h-[752px] mt-[32px]">
+
+        <main className="flex flex-col justify-between desktop:h-[752px] mt-[32px]">
+          {/* 담당자 */}
           <section>
             <div className="text-[#333236] font-medium text-[18px]">담당자</div>
             <div className="mt-[8px]">
               <select
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] tablet:w-full desktop:w-full h=[42px] tablet:h-[50px] desktop:h-[50px]"
               >
                 <option value="">담당자 선택</option>
                 {members.map((member) => (
@@ -163,6 +147,8 @@ export default function CreateTodoCard({
               </select>
             </div>
           </section>
+
+          {/* 제목 */}
           <section>
             <div className="flex gap-[2px]">
               <div className="text-[#333236] font-medium text-[18px]">제목</div>
@@ -170,18 +156,18 @@ export default function CreateTodoCard({
                 *
               </div>
             </div>
-            <div>
-              <div className="mt-[8px]">
-                <Input
-                  placeholder="제목을 입력해 주세요"
-                  type="text"
-                  value={title}
-                  className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
-                  onChange={setTitle}
-                />
-              </div>
+            <div className="mt-[8px]">
+              <Input
+                placeholder="제목을 입력해 주세요"
+                type="text"
+                value={title}
+                className="w-[295px] tablet:w-full desktop:w-full h-[42px] tablet:h-[50px] desktop:h-[50px]"
+                onChange={setTitle}
+              />
             </div>
           </section>
+
+          {/* 설명 */}
           <section>
             <div className="flex gap-[2px]">
               <div className="text-[#333236] font-medium text-[18px]">설명</div>
@@ -194,22 +180,26 @@ export default function CreateTodoCard({
                 placeholder="설명을 입력해 주세요"
                 type="textarea"
                 value={desc}
-                className="w-[295px] lg:w-full h-[84px] lg:h-[126px]"
+                className="w-[295px] tablet:w-full desktop:w-full h-[84px] tablet:h-[126px] desktop:h-[126px]"
                 onChange={setDesc}
               />
             </div>
           </section>
+
+          {/* 마감일 */}
           <section>
             <div className="text-[#333236] font-medium text-[18px]">마감일</div>
             <div className="mt-[8px]">
               <Input
                 type="datetime-local"
                 value={date}
-                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] tablet:w-full desktop:w-full h-[42px] tablet:h-[50px] desktop:h-[50px]"
                 onChange={setDate}
               />
             </div>
           </section>
+
+          {/* 태그 */}
           <section>
             <div className="text-[#333236] font-medium text-[18px]">태그</div>
             <div className="mt-[8px]">
@@ -217,14 +207,16 @@ export default function CreateTodoCard({
                 placeholder="입력 후 Enter"
                 type="text"
                 value={tag}
-                className="w-[295px] lg:w-full h-[42px] lg:h-[50px]"
+                className="w-[295px] tablet:w-full desktop:w-full h-[42px] tablet:h-[50px] desktop:h-[50px]"
                 onChange={setTag}
               />
             </div>
           </section>
+
+          {/* 이미지 */}
           <section>
             <div className="text-[#333236] font-medium text-[18px]">이미지</div>
-            <div className="mt-[5px] w-[58px] lg:w-[76px] h-[58px] lg:h-[76px]">
+            <div className="mt-[5px] w-[58px] tablet:w-[76px] desktop:w-[76px] h-[58px] tablet:h-[76px] desktop:h-[76px]">
               <div className="mt-[8px]">
                 <label
                   htmlFor="imageFile"
@@ -263,7 +255,9 @@ export default function CreateTodoCard({
           </section>
         </main>
       </div>
-      <div className="flex w-[327px] lg:w-[520px] h-[42px] lg:h-[54px] mx-auto">
+
+      {/* 버튼 바 */}
+      <div className="flex w-[327px] desktop:w-[520px] h-[42px] desktop:h-[54px] mx-auto">
         <form onSubmit={handleSubmit}>
           <div className="flex justify-between">
             <div>
@@ -271,7 +265,7 @@ export default function CreateTodoCard({
                 type="button"
                 disabled={false}
                 label="취소"
-                className="w-[144px] lg:w-[256px] h-[54px] bg-[#FFFFFF] rounded-xl text-[#787486] text-[16px] leading-[26px] font-medium border border-[#D9D9D9]"
+                className="w-[144px] desktop:w-[256px] h-[54px] bg-[#FFFFFF] rounded-xl text-[#787486] text-[16px] leading-[26px] font-medium border border-[#D9D9D9]"
                 onClick={onClose}
               />
             </div>
@@ -280,7 +274,7 @@ export default function CreateTodoCard({
                 type="submit"
                 disabled={!isValid}
                 label="생성"
-                className="w-[144px] lg:w-[256px] h-[54px] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
+                className="w-[144px] desktop:w-[256px] h-[54px] rounded-xl text-[#FFFFFF] text-[16px] leading-[26px] font-medium"
               />
             </div>
           </div>
