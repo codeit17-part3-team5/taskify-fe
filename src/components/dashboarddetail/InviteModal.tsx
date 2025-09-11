@@ -30,6 +30,7 @@ export default function InviteModal({
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleInvite = async () => {
+    console.log("dashboardId in InviteModal:", dashboardId);
     try {
       const response = await instance.post(
         `/dashboards/${dashboardId}/invitations`,
@@ -67,7 +68,7 @@ export default function InviteModal({
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          type="text"
+          type="email"
           className="border rounded px-3 py-2"
           placeholder="이메일을 입력해 주세요."
         />
