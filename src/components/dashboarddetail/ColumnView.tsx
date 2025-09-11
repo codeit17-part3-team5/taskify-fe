@@ -134,7 +134,7 @@ export default function ColumnView({
               {columnTitle}
             </div>
             <div className="text-[12px] px-1 font-500 text-[#787486] border-[1px] border-[#787486] bg-[#EEEEEE]">
-              N
+              {cards.length}
             </div>
           </div>
           {/* 설정 버튼 */}
