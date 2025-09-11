@@ -87,7 +87,7 @@ export default function MyPage() {
 
       <div className="flex-1 flex flex-col">
         {/* 상단 내브바: 제목 가운데 */}
-        <Navbar />
+        <Navbar title="계정관리" />
 
         <main className="flex-1 overflow-y-auto">
           <div className="mt-[20px] ml-[20px]">
