@@ -53,7 +53,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       login: async ({ email, password }) => {
-        console.log(email, password);
         try {
           const { data } = await axios.post<LoginResponse>("/auth/login", {
             email,

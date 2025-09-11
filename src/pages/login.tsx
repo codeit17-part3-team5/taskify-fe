@@ -87,11 +87,9 @@ export default function Login() {
       await login({ email, password }); // 실패 시 throw
       router.push("/mydashboard/Mydashboard");
     } catch (err) {
-      console.log("[UI] caught error:", err); // ✅ 반드시 보이게
       const message = normalizeLoginError(err);
       setErrorMsg(message);
       setErrorOpen(true);
-      console.log(errorOpen);
     } finally {
       setLoading(false);
     }
