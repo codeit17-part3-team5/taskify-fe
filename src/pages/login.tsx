@@ -85,7 +85,7 @@ export default function Login() {
     try {
       setLoading(true);
       await login({ email, password }); // 실패 시 throw
-      router.push("/mydashboard/Mydashboard");
+      router.push("/mydashboard/MydashBoard");
     } catch (err) {
       const message = normalizeLoginError(err);
       setErrorMsg(message);
