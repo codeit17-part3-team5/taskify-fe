@@ -7,6 +7,7 @@ import {
   cancelInvitation,
 } from "@/lib/dashboard";
 import Pagination from "../mydashboard/Pagination";
+import InviteModal from "../dashboarddetail/InviteModal";
 import Plusinviteing from "@/assets/images/Plusinvite.png";
 import type { Invitation } from "@/lib/types";
 
@@ -26,6 +27,10 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
   const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / size));
+
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const openInvite = () => setInviteOpen(true);
+  const closeInvite = () => setInviteOpen(false);
 
   const fetchInvites = useCallback(async () => {
     setLoading(true);
@@ -55,37 +60,6 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
     fetchInvites();
   }, [fetchInvites]);
 
-  const handleInvite = async () => {
-    if (inviting) return;
-    const email = window.prompt("초대할 이메일을 입력하세요:");
-    if (!email) return;
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailOk) {
-      alert("이메일 형식이 올바르지 않습니다.");
-      return;
-    }
-
-    try {
-      setInviting(true);
-      await inviteToDashboard(dashboardId, { email });
-      if (page === 1) await fetchInvites();
-      else setPage(1);
-    } catch (e: unknown) {
-      if (axios.isAxiosError(e)) {
-        alert(
-          e.response?.data?.message ??
-            e.message ??
-            "초대 중 오류가 발생했습니다."
-        );
-      } else if (e instanceof Error) {
-        alert(e.message);
-      } else {
-        alert("초대 중 오류가 발생했습니다.");
-      }
-    } finally {
-      setInviting(false);
-    }
-  };
   const handleCancel = async (invitationId: number) => {
     if (cancelingId) return;
     const ok = window.confirm("이 초대를 취소하시겠습니까?");
@@ -116,6 +90,19 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
       }
     } finally {
       setCancelingId(null);
+    }
+  };
+
+  const handleInvite = () => {
+    openInvite();
+  };
+
+  const handleModalClose = async () => {
+    closeInvite();
+    if (page === 1) {
+      await fetchInvites();
+    } else {
+      setPage(1);
     }
   };
 
@@ -174,6 +161,9 @@ export default function InviteEmailList({ dashboardId }: InviteEmailListProps) {
           </li>
         ))}
       </ul>
+      {inviteOpen && (
+        <InviteModal dashboardId={dashboardId} onClose={handleModalClose} />
+      )}
     </div>
   );
 }

@@ -5,22 +5,28 @@ type PasswordInputProps = {
   placeholder: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 };
 
 export default function PasswordInput({
   placeholder,
   value,
   onChange,
+  onBlur,
+  inputProps,
 }: PasswordInputProps) {
   // 눈 그림
-  // 비밀번호 감추기
 
   return (
     <div>
       <AccountInput
+        type="password"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        inputProps={inputProps}
       />
     </div>
   );
