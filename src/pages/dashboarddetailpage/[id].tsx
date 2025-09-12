@@ -23,7 +23,16 @@ export default function DashBoardDetail() {
   const [columns, setColumns] = useState<Column[]>([]);
   // const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const dashboardId = 16239;
+  const dashboardId = React.useMemo(() => {
+    if (typeof id === "string" && !isNaN(Number(id))) {
+      return parseInt(id, 10);
+    }
+    return 0;
+  }, [id]);
+
+  const handleDeleteColumn = (id: number) => {
+    setColumns((prev) => prev.filter((col) => col.id !== id));
+  };
 
   const handleCreateColumn = async (title: string, dashboardId: number) => {
     if (columns.length >= 10) {
@@ -59,7 +68,7 @@ export default function DashBoardDetail() {
           {/* 컨텐츠 영역 */}
           <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
             {/* To do */}
-            <ColumnList columns={columns} />
+            <ColumnList columns={columns} onDeleteColumn={handleDeleteColumn} />
 
             {/* 칼럼 추가하기 */}
             <CreativeColumn onClick={() => setIsOpen(true)} />

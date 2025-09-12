@@ -28,7 +28,7 @@ export default function EditColumnsModal({
   const [title, setTitle] = useState(initialTitle);
 
   const handleDelete = () => {
-    const confirmed = confirm("컬럼의 모든 카드가 삭제됩니다");
+    const confirmed = confirm("컬럼과 모든 카드가 삭제됩니다");
     if (confirmed) {
       onDelete();
     }

@@ -2,6 +2,7 @@ import React, { Children, useEffect, useState } from "react";
 import axios from "axios";
 import CreateTodoCard from "@/pages/CreateTodoCard";
 import EditColumnModal from "./EditColumnModal";
+import CardModal from "./CardModal";
 import instance from "@/lib/axios";
 
 type Column = {
@@ -12,6 +13,7 @@ type Column = {
 
 type ColumnViewProps = {
   column: Column;
+  onDeleteColumn: (id: number) => void;
 };
 
 type Card = {
@@ -33,12 +35,40 @@ export type Member = {
   userId: number;
 };
 
-export default function ColumnView({ column }: ColumnViewProps) {
+export default function ColumnView({
+  column,
+  onDeleteColumn,
+}: ColumnViewProps) {
   const [cardModalOpen, setCardModalOpen] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
   const [columnTitle, setColumnTitle] = useState(column.title);
   const [members, setMembers] = useState<Member[]>([]);
+
+  // 컬럼 제목 변경
+  const handleColumnTitleUpdate = async (newTitle: string) => {
+    try {
+      await instance.put(`/columns/${column.id}`, { title: newTitle });
+
+      setColumnTitle(newTitle); // 화면 즉시 반영
+      setManageModalOpen(false);
+      alert("컬럼 제목이 변경되었습니다.");
+    } catch (error) {
+      console.log("컬럼 제목 변경 실패", error);
+      alert("변경 실패");
+    }
+  };
+
+  // 컬럼 삭제
+  const handleDeleteColumn = async () => {
+    try {
+      await instance.delete(`/columns/${column.id}`);
+      alert("컬럼이 삭제되었습니다.");
+      onDeleteColumn(column.id);
+    } catch (error) {
+      console.log("컬럼 삭제 실패");
+    }
+  };
 
   //카드 생성
   const handleCreateCard = () => {
@@ -49,8 +79,12 @@ export default function ColumnView({ column }: ColumnViewProps) {
   // 카드 생성 후 새로고침
   const refreshCards = async () => {
     try {
-      const response = await instance.get(`/cards`);
-      setCards(response.data);
+      const response = await instance.get(`/cards`, {
+        params: {
+          columnId: column.id,
+        },
+      });
+      setCards(response.data.cards);
     } catch (error) {
       console.log("카드 목록 가져오기 실패", error);
     }
@@ -67,20 +101,6 @@ export default function ColumnView({ column }: ColumnViewProps) {
     } catch (error) {
       console.log("카드 삭제 실패", error);
       alert("카드 삭제 실패");
-    }
-  };
-
-  // 컬럼 제목 변경
-  const handleColumnTitleUpdate = async (newTitle: string) => {
-    try {
-      await instance.put(`/columns/${column.id}`, { title: newTitle });
-
-      setColumnTitle(newTitle); // 화면 즉시 반영
-      setManageModalOpen(false);
-      alert("컬럼 제목이 변경되었습니다.");
-    } catch (error) {
-      console.log("컬럼 제목 변경 실패", error);
-      alert("변경 실패");
     }
   };
 
@@ -115,7 +135,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
               {columnTitle}
             </div>
             <div className="text-[12px] px-1 font-500 text-[#787486] border-[1px] border-[#787486] bg-[#EEEEEE]">
-              N
+              {cards.length}
             </div>
           </div>
           {/* 설정 버튼 */}
@@ -134,29 +154,28 @@ export default function ColumnView({ column }: ColumnViewProps) {
           </button>
         </div>
         {/* </div> */}
-      </div>
-
-      {/* 카드 목록 렌더링 */}
-      <div className="flex flex-col gap-2 mt-4 px-4">
-        {cards.map((card: Card) => (
-          <div
-            key={card.id}
-            className="border rounded p-3 bg-white shadow text-sm text-gray-500"
-          >
-            <div className="font-semibold">{card.title}</div>
-            <div className="text-gray-300">{card.assigneeUserId}</div>
-          </div>
-        ))}
+        {/* 카드 목록 렌더링 */}
+        <div className="flex flex-col gap-2 mt-4 px-4">
+          {cards.map((card: Card) => (
+            <div
+              key={card.id}
+              className="border rounded p-3 bg-white shadow text-sm text-gray-500"
+            >
+              <div className="font-semibold">{card.title}</div>
+              <div className="text-gray-300">{card.assigneeUserId}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 카드 추가 모달 렌더링 조건 */}
       {cardModalOpen && (
         <div className="">
           <div>
-            <CreateTodoCard
+            <CardModal
+              open={cardModalOpen}
               onClose={() => setCardModalOpen(false)}
               onCreate={handleCreateCard}
-              // assigneeUserId={0} // 0 가능? 테스트
               dashboardId={column.dashboardId}
               columnId={column.id}
               members={members}
@@ -172,7 +191,7 @@ export default function ColumnView({ column }: ColumnViewProps) {
             <EditColumnModal
               open={true}
               onClose={() => setManageModalOpen(false)}
-              onDelete={handleCardsDelete}
+              onDelete={handleDeleteColumn}
               initialTitle={columnTitle}
               onUpdate={handleColumnTitleUpdate}
             />

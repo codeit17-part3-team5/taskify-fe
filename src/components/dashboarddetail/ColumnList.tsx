@@ -9,15 +9,23 @@ type Column = {
 
 interface ColumnListProps {
   columns: Column[];
+  onDeleteColumn: (id: number) => void;
 }
 
-export default function ColumnList({ columns }: ColumnListProps) {
+export default function ColumnList({
+  columns,
+  onDeleteColumn,
+}: ColumnListProps) {
   return (
     <>
       <div className="flex flex-row gap-4 px-4  overflow-x-auto min-h-screen">
         {columns.length > 0 ? (
           columns.map((column) => (
-            <ColumnView key={column.id} column={column} />
+            <ColumnView
+              key={column.id}
+              column={column}
+              onDeleteColumn={onDeleteColumn}
+            />
           ))
         ) : (
           <div className="text-gray-400 text-center w-full mt-10">
