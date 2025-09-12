@@ -64,7 +64,7 @@ export default function DashBoardDetail() {
         {/* 메인 컨텐츠 + 헤더 */}
         <div className="flex-1 flex flex-col bg-[#FAFAFA]">
           {/* 메인 헤더 */}
-          <Navbar />
+          <Navbar dashboardId={dashboardId} />
           {/* 컨텐츠 영역 */}
           <div className="flex items-center gap-4 bg-[#FAFAFA] overflow-x-auto">
             {/* To do */}
