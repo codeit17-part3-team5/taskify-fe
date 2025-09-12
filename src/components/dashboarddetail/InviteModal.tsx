@@ -17,7 +17,7 @@ const invitebtn = (isDisabled: boolean) =>
 interface InviteModalProps {
   onClose: () => void;
   children?: React.ReactNode;
-  dashboardId: number;
+  dashboardId?: number;
 }
 
 export default function InviteModal({

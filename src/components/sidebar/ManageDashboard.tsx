@@ -5,7 +5,7 @@ import InviteModal from "../dashboarddetail/InviteModal";
 import { useState } from "react";
 
 interface ManageDashboardProps {
-  dashboardId: number;
+  dashboardId?: number;
 }
 
 export default function ManageDashboard({ dashboardId }: ManageDashboardProps) {
