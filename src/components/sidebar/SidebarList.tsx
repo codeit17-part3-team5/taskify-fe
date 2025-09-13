@@ -74,7 +74,7 @@ export default function SidebarList() {
         <div className="text-gray-600">대시보드가 없습니다.</div>
       )}
       {dashboards.map((d) => (
-        <Link key={d.id} href={`/dashboard/${d.id}`}>
+        <Link key={d.id} href={`/dashboarddetailpage/${d.id}`}>
           <SidebarDashboard
             dashboardTitle={d.title || "제목 없음"}
             color={d.color}
