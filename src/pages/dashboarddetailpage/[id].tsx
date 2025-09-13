@@ -58,7 +58,7 @@ export default function DashBoardDetail() {
     <>
       <div className="flex">
         {/* 사이드 메뉴 */}
-        <div>
+        <div className="w-[300px]">
           <Sidebar />
         </div>
         {/* 메인 컨텐츠 + 헤더 */}
