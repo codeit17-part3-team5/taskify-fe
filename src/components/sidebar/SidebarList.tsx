@@ -7,6 +7,8 @@ import Link from "next/link";
 import { instance } from "@/lib/axios";
 import { useTokenStore } from "@/stores/token";
 import { DASHBOARDS_INVALIDATED } from "@/lib/dashboardEvents";
+import Modal from "../Modal";
+import CreateDashboard from "../mydashboard/CreateDashboard";
 
 type SidebarItem = Pick<Dashboard, "id" | "title" | "color">;
 
@@ -22,8 +24,8 @@ type DashboardsResponse = {
 
 export default function SidebarList() {
   const token = useTokenStore((s) => s.accessToken);
-
   const [dashboards, setDashboards] = useState<SidebarItem[]>([]);
+  const [openCreate, setOpenCreate] = useState(false);
 
   const refetch = useCallback(async () => {
     if (!token) return;
@@ -54,15 +56,41 @@ export default function SidebarList() {
     return () => window.removeEventListener(DASHBOARDS_INVALIDATED, handler);
   }, [refetch]);
 
+  const handleCreate = useCallback(
+    async ({ title, color }: { title: string; color: string }) => {
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+      try {
+        await instance.post("/dashboards", { title, color });
+        setOpenCreate(false);
+      } catch (err) {
+        console.error(err);
+        alert("대시보드 생성에 실패했습니다.");
+      }
+    },
+    [token]
+  );
+
   return (
     <div className="flex-col mt-[56px]">
       <div className="w-full flex col justify-between">
         <div className="text-xs text-[#787486] font-semibold leading-[20px]">
           Dash Boards
         </div>
-        <div className="flex items-center justify-center w-[20px] h-[20px]">
-          <Image src={plusIcon} alt="추가아이콘" />
-        </div>
+        <button
+          type="button"
+          onClick={() => setOpenCreate(true)}
+          arial-label="대시보드 생성"
+          className="flex items-center justify-center w-[20px] h-[20px] focus:outline-none cursor-pointer"
+          disabled={!token}
+          title={token ? "새 대시보드" : "로그인 필요"}
+        >
+          <div className="flex items-center justify-center w-[20px] h-[20px]">
+            <Image src={plusIcon} alt="추가아이콘" />
+          </div>
+        </button>
       </div>
       {/* <div className="flex items-center justify-between mt-[16px]">
         <div className="content-center">
@@ -81,6 +109,20 @@ export default function SidebarList() {
           />
         </Link>
       ))}
+
+      <Modal
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        // 필요 시 오버레이/컨텐츠 커스텀 클래스 전달
+        overlayClassName="bg-black/40"
+        // CreateDashboard가 카드 스타일을 이미 갖고 있어 contentClassName은 비워도 OK
+        // contentClassName="p-0"
+      >
+        <CreateDashboard
+          onCancel={() => setOpenCreate(false)}
+          onCreate={handleCreate}
+        />
+      </Modal>
     </div>
   );
 }
