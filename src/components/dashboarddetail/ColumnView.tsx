@@ -4,6 +4,15 @@ import CreateTodoCard from "@/pages/CreateTodoCard";
 import EditColumnModal from "./EditColumnModal";
 import CardModal from "./CardModal";
 import instance from "@/lib/axios";
+import DraggableCard from "./DraggableCard";
+import DropaableWrapper from "./DroppableWrapper";
+import {
+  DndContext,
+  useDraggable,
+  useDroppable,
+  closestCenter,
+  DragEndEvent,
+} from "@dnd-kit/core";
 
 type Column = {
   id: number;
@@ -104,6 +113,24 @@ export default function ColumnView({
     }
   };
 
+  // 카드 dnd
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = cards.findIndex((c) => c.id === Number(active.id));
+    const newIndex = cards.findIndex((c) => c.id === Number(over.id));
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const updated = [...cards];
+    const [movedCard] = updated.splice(oldIndex, 1);
+    updated.splice(newIndex, 0, movedCard);
+
+    setCards(updated);
+  };
+
   // 멤버 리스트 가져오기
   useEffect(() => {
     const fetchMembers = async () => {
@@ -154,8 +181,21 @@ export default function ColumnView({
           </button>
         </div>
         {/* </div> */}
-        {/* 카드 목록 렌더링 */}
-        <div className="flex flex-col gap-2 mt-4 px-4">
+        {/* 카드 목록 렌더링 (dnd 추가)*/}
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="flex flex-col gap-4 mt-4 px-4">
+            {cards.map((card: Card) => (
+              <DropaableWrapper key={card.id} id={String(card.id)}>
+                <DraggableCard card={card} />
+              </DropaableWrapper>
+            ))}
+          </div>
+        </DndContext>
+
+        {/* <div className="flex flex-col gap-4 mt-4 px-4">
           {cards.map((card: Card) => (
             <div
               key={card.id}
@@ -165,7 +205,7 @@ export default function ColumnView({
               <div className="text-gray-300">{card.assigneeUserId}</div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* 카드 추가 모달 렌더링 조건 */}
