@@ -30,7 +30,7 @@ export default function CardModal({
     <Modal
       open={open}
       onClose={onClose}
-      contentClassName="bg-[#FFFFFF] w-full max-w-[480px] p-[6px] rounded-[8px] max-h-[90vh] overflow-y-auto overflow-x-hidden box-border"
+      contentClassName="bg-[#FFFFFF] w-full max-w-[600px] p-[6px] rounded-[8px] max-h-[90vh] overflow-y-auto overflow-x-hidden box-border"
     >
       <CreateTodoCard
         onClose={onClose}
